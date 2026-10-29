@@ -1,0 +1,25 @@
+# Creates the Hack Day issue labels automatically.
+# Runs on every push to main and can also be started by hand (Actions tab -> Create labels -> Run workflow).
+name: Create labels
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh label create documentation --color 0075ca --description "1 point"        --repo "$REPO" --force
+          gh label create beginner      --color 7057ff --description "10 points"       --repo "$REPO" --force
+          gh label create hard          --color d73a4a --description "20 points"       --repo "$REPO" --force
+          gh label create hacktoberfest --color ff7518 --description "Hacktoberfest"   --repo "$REPO" --force
