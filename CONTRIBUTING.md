@@ -29,9 +29,15 @@ Welcome to Hack Day! Here is how to ship your first pull request.
 
 ## How PRs are scored
 
-`PR score = base points × (0.5 × Works + 0.3 × Code quality + 0.2 × Description)`
+Every issue has exactly one tag:
 
-Each part is marked 0, 0.5 or 1. Judges check that the change meets the issue's "Done when", the code is readable and focused, and the PR description is clear.
+| Tag | Points | Expected time |
+| --- | --- | --- |
+| `documentation` | 1 | under 20 min |
+| `beginner` | 10 | under 40 min |
+| `hard` | 20 | 1- 3 hours |
+
+Judges look at: does it solve the issue, is the change clean and small, did you test it, is the PR description clear.
 
 ## Tips
 
