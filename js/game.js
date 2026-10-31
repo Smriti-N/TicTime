@@ -15,13 +15,14 @@ function nextPlayer(player) {
 }
 
 function getGameResult(board) {
-  if (board.every((cell) => cell !== null)) {
-    return { status: 'draw', winner: null, line: null };
-  }
+
   for (const [a, b, c] of WIN_LINES) {
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
       return { status: 'win', winner: board[a], line: [a, b, c] };
     }
+  }
+  if (board.every((cell) => cell !== null)) {
+    return { status: 'draw', winner: null, line: null };
   }
   return { status: 'playing', winner: null, line: null };
 }
