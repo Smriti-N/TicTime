@@ -3,6 +3,8 @@
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const statusTextEl = document.getElementById('status-text');
+const historyListEl = document.getElementById('move-history');
+const historyEmptyEl = document.getElementById('history-empty');
 let cellEls = [];
 
 const MARKS = {
@@ -26,6 +28,7 @@ function buildBoard(onCellClick) {
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+    cell.classList.remove('win');
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
@@ -33,9 +36,33 @@ function renderBoard(board) {
   });
 }
 
+function renderHistory(moves, currentMove, onMoveSelect) {
+  historyListEl.innerHTML = '';
+  historyEmptyEl.hidden = moves.length > 0;
+
+  const positions = [{ moveNumber: 0, move: null }];
+  moves.forEach((move, index) => {
+    positions.push({ moveNumber: index + 1, move });
+  });
+
+  for (const { moveNumber, move } of positions) {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'history-item' + (moveNumber === currentMove ? ' is-current' : '');
+    button.textContent = move
+      ? `Move ${moveNumber} · Player ${move.player} · Square ${move.index + 1}`
+      : 'Start position';
+    if (moveNumber === currentMove) button.setAttribute('aria-current', 'step');
+    button.addEventListener('click', () => onMoveSelect(moveNumber));
+    item.appendChild(button);
+    historyListEl.appendChild(item);
+  }
+}
+
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    cellEls[line[i]].classList.add('win');
+  for (const index of line) {
+    cellEls[index].classList.add('win');
   }
 }
 
@@ -47,6 +74,10 @@ function setStatus(text, player) {
 
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
+}
+
+function setUndoEnabled(enabled) {
+  document.getElementById('undo-btn').disabled = !enabled;
 }
 
 function renderScores(scores) {
