@@ -1,8 +1,10 @@
+
 // Everything that touches the page (DOM) lives here.
 
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const statusTextEl = document.getElementById('status-text');
+
 let cellEls = [];
 
 const MARKS = {
@@ -10,67 +12,107 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+// Build the board according to the selected size.
+function buildBoard(size, onCellClick) {
   boardEl.innerHTML = '';
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+
+  boardEl.style.setProperty('--board-size', size);
+
+  for (let i = 0; i < size * size; i++) {
     const cell = document.createElement('div');
+
     cell.className = 'cell';
     cell.dataset.index = i;
+
     cell.addEventListener('click', () => onCellClick(i));
+
     boardEl.appendChild(cell);
     cellEls.push(cell);
   }
 }
 
+// Display X and O marks.
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+
     if ((cell.dataset.mark || '') === (value || '')) return;
+
     cell.dataset.mark = value || '';
-    cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
+
+    cell.className = 'cell' +
+      (value ? ' filled ' + value.toLowerCase() : '');
+
     cell.innerHTML = value ? MARKS[value] : '';
   });
 }
 
+// Highlight all winning cells.
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    cellEls[line[i]].classList.add('win');
-  }
+  line.forEach(index => {
+    cellEls[index].classList.add('win');
+  });
 }
 
+// Update the status message.
 function setStatus(text, player) {
   statusTextEl.textContent = text;
+
   statusEl.dataset.player = player || '';
   boardEl.dataset.turn = player || '';
 }
 
+// Lock or unlock the board.
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
 }
 
+// Update scoreboard.
 function renderScores(scores) {
   document.getElementById('score-x').textContent = scores.X;
   document.getElementById('score-o').textContent = scores.O;
   document.getElementById('score-draws').textContent = scores.draws;
 }
 
+// Change theme.
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+
+  document.getElementById('theme-toggle').textContent =
+    theme === 'dark' ? '☀️' : '🌙';
 }
 
+// Launch confetti after a win.
 function launchConfetti() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const colors = ['#ff5f6d', '#ffc371', '#36d1dc', '#5b86e5', '#a78bfa'];
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  const colors = [
+    '#ff5f6d',
+    '#ffc371',
+    '#36d1dc',
+    '#5b86e5',
+    '#a78bfa'
+  ];
+
   for (let i = 0; i < 36; i++) {
     const piece = document.createElement('i');
+
     piece.className = 'confetti';
     piece.style.left = Math.random() * 100 + 'vw';
     piece.style.background = colors[i % colors.length];
+
     piece.style.animationDelay = Math.random() * 0.4 + 's';
-    piece.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+
+    piece.style.setProperty(
+      '--drift',
+      (Math.random() * 160 - 80) + 'px'
+    );
+
     document.body.appendChild(piece);
+
     setTimeout(() => piece.remove(), 2400);
   }
 }
