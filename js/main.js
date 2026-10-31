@@ -10,6 +10,9 @@ const state = {
 
 function handleCellClick(index) {
   if (state.gameOver) return;
+  
+  // FIX: Do nothing if the clicked square already has a mark
+  if (state.board[index] !== null) return; 
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
