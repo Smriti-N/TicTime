@@ -109,6 +109,11 @@ function handleSizeChange(e) {
 function toggleTheme() {
   state.theme = state.theme === 'light' ? 'dark' : 'light';
   setTheme(state.theme);
+  try {
+    localStorage.setItem('tictime-theme', state.theme);
+  } catch (e) {
+    // ignore storage access errors
+  }
 }
 
 // Initial setup
@@ -117,6 +122,16 @@ const sizeSelect = document.getElementById('size-select');
 const newGameBtn = document.getElementById('new-game-btn');
 const resetScoresBtn = document.getElementById('reset-scores-btn');
 const themeToggleBtn = document.getElementById('theme-toggle');
+
+try {
+  const savedTheme = localStorage.getItem('tictime-theme');
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    state.theme = savedTheme;
+    setTheme(state.theme);
+  }
+} catch (e) {
+  // ignore storage access errors
+}
 
 buildBoard(state.size, handleCellClick);
 renderBoard(state.board);

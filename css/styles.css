@@ -133,9 +133,33 @@ select:disabled { opacity: .6; cursor: not-allowed; }
 .badge { font-size: .68rem; padding: 3px 8px; border-radius: 999px; color: #fff; background: linear-gradient(90deg, var(--x), #ffc371); }
 
 /* ---------- Footer & confetti ---------- */
-.footer { max-width: 1000px; margin: 30px auto 0; text-align: center; color: var(--muted); font-size: .85rem; }
+.footer { max-width: 1000px; margin: 30px auto 0; text-align: center; color: var(--muted); font-size: .85rem; line-height: 1.6; }
+.footer p { margin: 4px 0; }
+.footer strong { color: var(--text); }
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .2s;
+}
+.footer a:hover {
+  text-decoration: underline;
+  color: var(--accent-2);
+}
+.footer-bonus {
+  font-size: .78rem;
+  opacity: .85;
+}
 .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 10; pointer-events: none; animation: fall 1.9s ease-in forwards; }
 @keyframes fall { to { transform: translate(var(--drift), 105vh) rotate(720deg); opacity: .8; } }
 
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  body { padding: 16px 12px 30px; }
+  .panel { padding: 16px; }
+  .header { margin-bottom: 18px; }
+  h1 { font-size: 1.7rem; }
+  .controls { flex-direction: column; }
+  .btn { width: 100%; }
+}
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .mark path, .mark circle { stroke-dashoffset: 0; } }

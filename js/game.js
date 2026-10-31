@@ -47,16 +47,70 @@ function getWinLines(size = 3) {
   return lines;
 }
 
+/**
+ * Board cell index mapping for standard 3x3 board:
+ * 
+ *  0 | 1 | 2
+ * ---+---+---
+ *  3 | 4 | 5
+ * ---+---+---
+ *  6 | 7 | 8
+ * 
+ * Winning lines represent all 8 possible 3-in-a-row combinations:
+ * - 3 horizontal rows: [0, 1, 2], [3, 4, 5], [6, 7, 8]
+ * - 3 vertical columns: [0, 3, 6], [1, 4, 7], [2, 5, 8]
+ * - 2 diagonals: [0, 4, 8] (main), [2, 4, 6] (anti-diagonal)
+ */
 const WIN_LINES = getWinLines(3);
 
+/**
+ * Creates an empty game board initialized with null values.
+ * 
+ * @param {number} [size=3] - The width and height of the square board.
+ * @returns {Array<null>} An array of length (size * size) filled with null.
+ * 
+ * @example
+ * createEmptyBoard(3); // returns [null, null, null, null, null, null, null, null, null]
+ */
 function createEmptyBoard(size = 3) {
   return Array(size * size).fill(null);
 }
 
+/**
+ * Returns the opposing player for the next turn.
+ * 
+ * @param {'X' | 'O'} player - The current player mark ('X' or 'O').
+ * @returns {'X' | 'O'} The next player ('O' if player is 'X', otherwise 'X').
+ * 
+ * @example
+ * nextPlayer('X'); // returns 'O'
+ * nextPlayer('O'); // returns 'X'
+ */
 function nextPlayer(player) {
   return player === 'X' ? 'O' : 'X';
 }
 
+/**
+ * Evaluates the current board state and determines if there is a winner, a draw, or if play continues.
+ * 
+ * @param {Array<string|null>} board - The board array representing the state of each cell.
+ * @param {number} [size=3] - The board dimension (e.g. 3 for 3x3).
+ * @returns {{status: 'win' | 'draw' | 'playing', winner: string | null, line: Array<number> | null}}
+ * The game result object indicating game status, winner ('X', 'O', or null), and the winning line indices (or null).
+ * 
+ * @example
+ * // When player X wins:
+ * getGameResult(['X','X','X', null,null,null, null,null,null]);
+ * // => { status: 'win', winner: 'X', line: [0, 1, 2] }
+ * 
+ * // When the board is full with no winner (draw):
+ * getGameResult(['X','O','X', 'X','O','O', 'O','X','X']);
+ * // => { status: 'draw', winner: null, line: null }
+ * 
+ * // When the game is still in progress:
+ * getGameResult(['X', null, null, null, 'O', null, null, null, null]);
+ * // => { status: 'playing', winner: null, line: null }
+ */
 function getGameResult(board, size = 3) {
   const lines = getWinLines(size);
 
