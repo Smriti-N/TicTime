@@ -6,10 +6,11 @@ const state = {
   gameOver: false,
   scores: { X: 0, O: 0, draws: 0 },
   theme: 'light',
+  size: 3,
 };
 
 function handleCellClick(index) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.board[index] !== null) return;
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
@@ -35,11 +36,13 @@ function handleCellClick(index) {
 }
 
 function startNewGame() {
-  state.board = createEmptyBoard();
+  state.board = createEmptyBoard(state.size);
   state.currentPlayer = 'X';
   state.gameOver = false;
+  buildBoard(handleCellClick, state.size);
   renderBoard(state.board);
   setBoardLocked(false);
+  setStatus("Player X's turn", 'X');
 }
 
 function toggleTheme() {
@@ -55,3 +58,7 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('size-select').addEventListener('change', (event) => {
+  state.size = Number(event.target.value);
+  startNewGame();
+});
