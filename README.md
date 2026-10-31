@@ -43,6 +43,20 @@ TicTime/
     └── main.js       # game state + event handlers
 ```
 
+## Install and test offline
+
+Serve this folder with a local server, such as VS Code Live Server, and open its
+`http://localhost` or `http://127.0.0.1` address. Service workers require localhost
+or HTTPS; opening `index.html` as a local file does not enable offline support.
+
+In browser DevTools → Application, check the Manifest and wait for the service
+worker to activate. Reload once so the page is controlled, then select Offline
+in DevTools → Network and reload again. Play a round and try New Game and the
+theme toggle. The font uses the existing system-font fallback without internet.
+Use the browser's Install app option when available; the exact location varies
+by browser. To clear offline data, use Application → Storage → Clear site data.
+When changing cached files, update the cache version in `sw.js`.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Pick an issue labelled `documentation`, `beginner` or `hard`, fix it, and open a pull request.
