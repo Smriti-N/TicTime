@@ -39,6 +39,27 @@ function highlightWinningCells(line) {
   }
 }
 
+function clearWinningCells() {
+  cellEls.forEach((cell) => cell.classList.remove('win'));
+}
+
+function renderHistory(history, currentMove, onJump) {
+  const list = document.getElementById('move-history');
+  list.innerHTML = '';
+  history.forEach((entry, move) => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'history-move';
+    button.textContent = move === 0 ? 'Game start' : `${move}. ${entry.player} → square ${entry.square + 1}`;
+    if (move === currentMove) button.setAttribute('aria-current', 'step');
+    button.addEventListener('click', () => onJump(move));
+    item.appendChild(button);
+    list.appendChild(item);
+  });
+  document.getElementById('undo-btn').disabled = currentMove === 0;
+}
+
 function setStatus(text, player) {
   statusTextEl.textContent = text;
   statusEl.dataset.player = player || '';
