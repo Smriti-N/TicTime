@@ -137,3 +137,4 @@ describe('Game Rules: getGameResult', () => {
     assert.deepStrictEqual(result, { status: 'draw', winner: null, line: null });
   });
 });
+

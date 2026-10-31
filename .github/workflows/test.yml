@@ -20,3 +20,4 @@ jobs:
 
       - name: Run automated game rule tests
         run: npm test
+
