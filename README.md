@@ -50,3 +50,5 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md). Pick an issue labelled `documentation`,
 ## License
 
 [MIT](LICENSE)
+## Game Screenshot
+Game is running successfully!

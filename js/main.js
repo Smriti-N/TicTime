@@ -10,6 +10,7 @@ const state = {
 
 function handleCellClick(index) {
   if (state.gameOver) return;
+  state.scores.draws++;
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
