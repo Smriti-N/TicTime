@@ -23,8 +23,8 @@ function handleCellClick(index) {
     setStatus(`Player ${result.winner} wins!`, result.winner);
     setBoardLocked(true);
     renderScores(state.scores);
-    launchConfetti();
-  } else if (result.status === 'draw') {
+    launchConfetti(); 
+} else if (result.status === 'draw') {
     state.gameOver = true;
     setStatus("It's a draw!", '');
     setBoardLocked(true);
@@ -46,7 +46,10 @@ function toggleTheme() {
   state.theme = state.theme === 'light' ? 'dark' : 'light';
   setTheme(state.theme);
 }
-
+function resetScores() {
+  state.scores = { X: 0, O: 0, draws: 0 };
+  renderScores(state.scores);
+}
 // TODO: wire up the "Reset Scores" button (#reset-scores-btn)
 
 buildBoard(handleCellClick);
@@ -55,3 +58,5 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('reset-scores-btn')
+  .addEventListener('click', resetScores);
