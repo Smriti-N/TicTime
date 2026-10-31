@@ -46,8 +46,17 @@ function toggleTheme() {
   state.theme = state.theme === 'light' ? 'dark' : 'light';
   setTheme(state.theme);
 }
+ function resetScores() {
+    state.scores.X = 0;
+    state.scores.O = 0;
+    state.scores.draws = 0;
 
-// TODO: wire up the "Reset Scores" button (#reset-scores-btn)
+    renderScores(state.scores);
+}
+
+document.getElementById('reset-scores-btn')
+    .addEventListener('click', resetScores);
+
 
 buildBoard(handleCellClick);
 renderBoard(state.board);
