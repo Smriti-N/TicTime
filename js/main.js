@@ -18,6 +18,7 @@ function handleCellClick(index) {
 
   if (result.status === 'win') {
     state.gameOver = true;
+    state.scores.draw++;
     state.scores[result.winner]++;
     highlightWinningCells(result.line);
     setStatus(`Player ${result.winner} wins!`, result.winner);
@@ -26,8 +27,10 @@ function handleCellClick(index) {
     launchConfetti();
   } else if (result.status === 'draw') {
     state.gameOver = true;
+    state.scores.draws++;
     setStatus("It's a draw!", '');
     setBoardLocked(true);
+    renderScores(state.scores);
   } else {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
@@ -38,6 +41,7 @@ function startNewGame() {
   state.board = createEmptyBoard();
   state.currentPlayer = 'X';
   state.gameOver = false;
+  setStatus("Player X's turn", 'X');
   renderBoard(state.board);
   setBoardLocked(false);
 }
