@@ -5,41 +5,87 @@ const state = {
   currentPlayer: 'X',
   gameOver: false,
   scores: { X: 0, O: 0, draws: 0 },
+  moves: [],
+  currentMove: 0,
+  scoredWinner: null,
   theme: 'light',
 };
 
 function handleCellClick(index) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.board[index] !== null) return;
 
+  if (state.currentMove < state.moves.length) {
+    state.moves = state.moves.slice(0, state.currentMove);
+    if (state.scoredWinner) {
+      state.scores[state.scoredWinner]--;
+      state.scoredWinner = null;
+      renderScores(state.scores);
+    }
+  }
+
+  state.moves.push({ player: state.currentPlayer, index });
+  state.currentMove = state.moves.length;
   state.board[index] = state.currentPlayer;
-  renderBoard(state.board);
-
   const result = getGameResult(state.board);
 
   if (result.status === 'win') {
-    state.gameOver = true;
     state.scores[result.winner]++;
-    highlightWinningCells(result.line);
-    setStatus(`Player ${result.winner} wins!`, result.winner);
-    setBoardLocked(true);
+    state.scoredWinner = result.winner;
     renderScores(state.scores);
     launchConfetti();
+  }
+
+  renderPosition();
+}
+
+function renderPosition() {
+  state.board = createEmptyBoard();
+  for (const move of state.moves.slice(0, state.currentMove)) {
+    state.board[move.index] = move.player;
+  }
+  state.currentPlayer = state.currentMove % 2 === 0 ? 'X' : 'O';
+
+  const result = getGameResult(state.board);
+  state.gameOver = result.status !== 'playing';
+  renderBoard(state.board);
+
+  if (result.status === 'win') {
+    highlightWinningCells(result.line);
+    setStatus(`Player ${result.winner} wins!`, result.winner);
   } else if (result.status === 'draw') {
-    state.gameOver = true;
     setStatus("It's a draw!", '');
-    setBoardLocked(true);
   } else {
-    state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
   }
+
+  setBoardLocked(state.gameOver);
+  setUndoEnabled(state.currentMove > 0);
+  renderHistory(state.moves, state.currentMove, selectHistoryMove);
+}
+
+function selectHistoryMove(moveNumber) {
+  state.currentMove = moveNumber;
+  renderPosition();
+}
+
+function undoMove() {
+  if (state.currentMove === 0) return;
+
+  state.moves = state.moves.slice(0, state.currentMove - 1);
+  state.currentMove--;
+  if (state.scoredWinner) {
+    state.scores[state.scoredWinner]--;
+    state.scoredWinner = null;
+    renderScores(state.scores);
+  }
+  renderPosition();
 }
 
 function startNewGame() {
-  state.board = createEmptyBoard();
-  state.currentPlayer = 'X';
-  state.gameOver = false;
-  renderBoard(state.board);
-  setBoardLocked(false);
+  state.moves = [];
+  state.currentMove = 0;
+  state.scoredWinner = null;
+  renderPosition();
 }
 
 function toggleTheme() {
@@ -50,8 +96,8 @@ function toggleTheme() {
 // TODO: wire up the "Reset Scores" button (#reset-scores-btn)
 
 buildBoard(handleCellClick);
-renderBoard(state.board);
+renderPosition();
 renderScores(state.scores);
-setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+document.getElementById('undo-btn').addEventListener('click', undoMove);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);

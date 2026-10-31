@@ -40,10 +40,17 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 .icon-btn:hover { transform: rotate(18deg) scale(1.08); }
 
 /* ---------- Layout ---------- */
-.layout { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: max-content 1fr; gap: 24px; align-items: start; }
+.layout { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: max-content minmax(240px, 1fr); gap: 24px; align-items: start; }
 .panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); backdrop-filter: blur(18px); }
 .history h2 { margin: 0 0 8px; font-size: 1.15rem; }
 .muted { color: var(--muted); font-size: .9rem; line-height: 1.5; margin: 0; }
+.history { position: sticky; top: 24px; display: flex; flex-direction: column; min-width: 0; max-height: calc(100vh - 48px); }
+.history-empty { margin-bottom: 12px; }
+.history-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; margin: 0 -8px; padding: 0 8px 4px; list-style: none; }
+.history-item { width: 100%; padding: 10px 12px; border: 1px solid var(--panel-border); border-radius: 12px; background: var(--card-bg); color: var(--text); font: inherit; font-size: .85rem; text-align: left; cursor: pointer; transition: background .2s, border-color .2s, transform .15s; }
+.history-item:hover { transform: translateX(2px); background: var(--cell-hover); }
+.history-item.is-current { border-color: var(--accent); background: var(--cell-hover); box-shadow: inset 3px 0 var(--accent); font-weight: 600; }
+.history-item:focus-visible { outline: 3px solid var(--o); outline-offset: 2px; }
 
 /* ---------- Scoreboard ---------- */
 .scoreboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
@@ -82,6 +89,7 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 .controls { display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; }
 .btn { font: inherit; font-weight: 600; padding: 12px 24px; border-radius: 14px; border: none; cursor: pointer; transition: transform .15s, box-shadow .2s; }
 .btn:hover { transform: translateY(-2px); }
+.btn:disabled { cursor: not-allowed; opacity: .5; transform: none; }
 .btn:focus-visible, .icon-btn:focus-visible { outline: 3px solid var(--o); outline-offset: 3px; }
 .btn-primary { color: #fff; background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 10px 22px rgba(124,58,237,.35); }
 .btn-ghost { color: var(--text); background: var(--card-bg); box-shadow: inset 0 0 0 1.5px var(--panel-border); }
@@ -95,5 +103,9 @@ select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px soli
 .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 10; pointer-events: none; animation: fall 1.9s ease-in forwards; }
 @keyframes fall { to { transform: translate(var(--drift), 105vh) rotate(720deg); opacity: .8; } }
 
-@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .history { position: static; max-height: none; }
+  .history-list { max-height: 40vh; }
+}
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .mark path, .mark circle { stroke-dashoffset: 0; } }

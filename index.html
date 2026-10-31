@@ -47,6 +47,7 @@
       <div class="board" id="board" data-turn="X"></div>
 
       <div class="controls">
+        <button id="undo-btn" class="btn btn-ghost" disabled>Undo</button>
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
         <button id="reset-scores-btn" class="btn btn-ghost">Reset Scores</button>
       </div>
@@ -65,7 +66,8 @@
 
     <aside class="panel history">
       <h2>Move history</h2>
-      <p class="muted">Coming soon. Every move will be listed here so you can jump back in time.</p>
+      <p class="muted history-empty" id="history-empty">Moves will appear here as you play.</p>
+      <ol class="history-list" id="move-history" aria-label="Moves"></ol>
     </aside>
   </main>
 
