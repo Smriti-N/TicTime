@@ -6,7 +6,10 @@ A colourful, animated Tic-Tac-Toe game built with plain **HTML, CSS and JavaScri
 
 ## Screenshots
 
-_Coming soon._
+![Game in Progress](docs/images/progress.jpg.png)
+![Win State](docs/images/wining.png)
+![Dark Mode Theme](docs/images/dark.jpg.png)
+
 
 ## Run it
 
