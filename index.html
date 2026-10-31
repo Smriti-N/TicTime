@@ -4,9 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TicTime · Tic-Tac-Toe</title>
+  <script>
+    (() => {
+      let theme;
+      try {
+        theme = localStorage.getItem('tictime-theme');
+      } catch (error) {
+        console.warn('Could not read the saved theme preference.', error);
+      }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/animations.css" />
 </head>
 <body>
   <!-- shared colour gradients used by the X and O marks -->
@@ -31,23 +48,28 @@
         <p class="tagline">Two players. Nine squares. One clock ticking.</p>
       </div>
     </div>
-    <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
+    <button id="theme-toggle" class="icon-btn focus-ring" type="button" aria-label="Switch to dark mode" aria-pressed="false">🌙</button>
   </header>
 
   <main class="layout">
-    <section class="panel game">
+    <section class="panel game" id="game">
       <div class="scoreboard">
         <div class="score-card x"><span class="score-label">Player X</span><span class="score-value" id="score-x">0</span></div>
         <div class="score-card"><span class="score-label">Draws</span><span class="score-value" id="score-draws">0</span></div>
         <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <div class="status" id="status" aria-live="polite" aria-atomic="true"><span class="dot" aria-hidden="true"></span><span id="status-text">Player X's turn</span></div>
 
       <div class="board" id="board" data-turn="X"></div>
 
       <div class="controls">
-        <button id="new-game-btn" class="btn btn-primary">New Game</button>
+        <button id="new-game-btn" class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20 7v5h-5M4.9 9a7.5 7.5 0 0 1 12.4-2L20 12M4 17v-5h5m10.1 3a7.5 7.5 0 0 1-12.4 2L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>New Game</span>
+        </button>
         <button id="reset-scores-btn" class="btn btn-ghost">Reset Scores</button>
       </div>
 
@@ -60,6 +82,13 @@
           <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
           <span class="badge">Coming soon</span>
         </label>
+        <label class="option">Animation
+          <select id="animation-theme-select" aria-label="Choose animation theme">
+            <option value="classic">Classic</option>
+            <option value="bounce">Bounce</option>
+            <option value="neon">Neon</option>
+          </select>
+        </label>
       </div>
     </section>
 
@@ -69,8 +98,41 @@
     </aside>
   </main>
 
+  <section class="panel effects-demo" aria-labelledby="effects-demo-title" data-reveal>
+    <div class="demo-heading">
+      <div>
+        <h2 id="effects-demo-title">Motion &amp; theme studio</h2>
+        <p class="muted">A quick tour of the theme switcher and lightweight interface effects.</p>
+      </div>
+      <a class="demo-link focus-ring" href="#game">Back to game</a>
+    </div>
+    <div class="demo-grid" data-stagger>
+      <article class="demo-card" data-reveal>
+        <span class="demo-icon" aria-hidden="true">◐</span>
+        <h3>Theme palettes</h3>
+        <p class="muted">Switch themes above. Your choice is saved, with system preference as the default.</p>
+      </article>
+      <article class="demo-card" data-reveal>
+        <span class="demo-icon" aria-hidden="true">↗</span>
+        <h3>Card lift</h3>
+        <p class="muted">Hover or focus a card to see a subtle transform-only lift.</p>
+      </article>
+      <article class="demo-card" data-reveal>
+        <span class="demo-icon" aria-hidden="true">···</span>
+        <h3>Staggered reveal</h3>
+        <ul class="demo-list" data-stagger>
+          <li data-reveal>Scroll-triggered entrance</li>
+          <li data-reveal>Animated keyboard focus</li>
+          <li data-reveal>Reduced-motion support</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
   <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
 
+  <script src="js/theme.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js"></script>

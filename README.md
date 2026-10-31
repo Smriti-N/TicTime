@@ -36,12 +36,21 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ```
 TicTime/
 ├── index.html        # page layout
-├── css/styles.css    # all styling and animations
+├── css/
+│   ├── theme.css     # light/dark design tokens
+│   ├── animations.css # reveal and interaction motion
+│   └── styles.css    # game and demo layout
 └── js/
     ├── game.js       # rules: win/draw detection (no DOM code)
-    ├── ui.js         # drawing the board, scores, theme, confetti
+    ├── ui.js         # drawing the board, scores, and confetti
+    ├── theme.js      # persisted, accessible theme toggle
+    ├── animations.js # reduced-motion-aware scroll reveals
     └── main.js       # game state + event handlers
 ```
+
+The theme defaults to the operating system preference and remembers manual
+changes in local storage. The motion demo below the game shows scroll reveals,
+staggered items, card lift, animated focus, and link underline effects.
 
 ## Contributing
 
