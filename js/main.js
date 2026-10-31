@@ -55,3 +55,16 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+// Install + offline support: manifest.webmanifest makes the game installable and
+// sw.js caches its files. Browsers only allow both over http(s) (they log errors
+// for a double-clicked index.html), so add them only when the page is served.
+if (location.protocol !== 'file:') {
+  document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="manifest.webmanifest" />');
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .catch((err) => console.warn('Offline support unavailable:', err));
+    });
+  }
+}
