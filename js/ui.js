@@ -1,5 +1,3 @@
-// Everything that touches the page (DOM) lives here.
-
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const statusTextEl = document.getElementById('status-text');
@@ -10,10 +8,11 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(onCellClick, size = 3) {
   boardEl.innerHTML = '';
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+  boardEl.style.setProperty('--board-size', size);
+  for (let i = 0; i < size * size; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.dataset.index = i;
@@ -34,9 +33,38 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
+}
+
+function clearWinningCells() {
+  cellEls.forEach((cell) => cell.classList.remove('win'));
+}
+
+function renderMoveHistory(moves, currentMove, onSelectMove) {
+  const historyEl = document.getElementById('move-history');
+  historyEl.innerHTML = '';
+
+  if (moves.length === 0) {
+    const emptyItem = document.createElement('li');
+    emptyItem.className = 'history-empty';
+    emptyItem.textContent = 'Moves will appear here.';
+    historyEl.appendChild(emptyItem);
+    return;
+  }
+
+  moves.forEach((move, index) => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'history-move';
+    button.textContent = `${move.player} → square ${move.index + 1}`;
+    if (index + 1 === currentMove) button.setAttribute('aria-current', 'step');
+    button.addEventListener('click', () => onSelectMove(index + 1));
+    item.appendChild(button);
+    historyEl.appendChild(item);
+  });
 }
 
 function setStatus(text, player) {
