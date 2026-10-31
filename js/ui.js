@@ -12,6 +12,7 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
+
 // Build the board according to the selected size.
 function buildBoard(size, onCellClick) {
   boardEl.innerHTML = '';
@@ -32,6 +33,7 @@ function buildBoard(size, onCellClick) {
   }
 }
 
+
 // Display X and O marks.
 function renderBoard(board) {
   board.forEach((value, i) => {
@@ -48,12 +50,33 @@ function renderBoard(board) {
   });
 }
 
-// Highlight all winning cells.
+
+// Highlight EVERY cell belonging to the winning line.
 function highlightWinningCells(line) {
+
+  // First remove any previous winning highlights.
+  cellEls.forEach(cell => {
+    cell.classList.remove('win');
+    cell.style.boxShadow = '';
+  });
+
+  // Apply the highlight to every winning cell.
   line.forEach(index => {
-    cellEls[index].classList.add('win');
+
+    const cell = cellEls[index];
+
+    // Check that the cell exists.
+    if (!cell) return;
+
+    // Add the winning class.
+    cell.classList.add('win');
+
+    // Apply the purple glow directly to this cell.
+    cell.style.boxShadow =
+      '0 0 0 3px var(--accent), 0 0 28px rgba(124, 58, 237, 0.65)';
   });
 }
+
 
 // Update the status message.
 function setStatus(text, player) {
@@ -63,10 +86,12 @@ function setStatus(text, player) {
   boardEl.dataset.turn = player || '';
 }
 
+
 // Lock or unlock the board.
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
 }
+
 
 // Update scoreboard.
 function renderScores(scores) {
@@ -74,6 +99,7 @@ function renderScores(scores) {
   document.getElementById('score-o').textContent = scores.O;
   document.getElementById('score-draws').textContent = scores.draws;
 }
+
 
 // Change theme.
 function setTheme(theme) {
@@ -83,8 +109,10 @@ function setTheme(theme) {
     theme === 'dark' ? '☀️' : '🌙';
 }
 
+
 // Launch confetti after a win.
 function launchConfetti() {
+
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return;
   }
@@ -98,6 +126,7 @@ function launchConfetti() {
   ];
 
   for (let i = 0; i < 36; i++) {
+
     const piece = document.createElement('i');
 
     piece.className = 'confetti';
