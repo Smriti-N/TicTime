@@ -87,7 +87,8 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 .btn-ghost { color: var(--text); background: var(--card-bg); box-shadow: inset 0 0 0 1.5px var(--panel-border); }
 .options { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
 .option { display: flex; align-items: center; gap: 8px; }
-select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--panel-border); background: var(--card-bg); color: var(--text); opacity: .6; }
+select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--panel-border); background: var(--card-bg); color: var(--text); }
+select:disabled { opacity: .6; cursor: not-allowed; }
 .badge { font-size: .68rem; padding: 3px 8px; border-radius: 999px; color: #fff; background: linear-gradient(90deg, var(--x), #ffc371); }
 
 /* ---------- Footer & confetti ---------- */
