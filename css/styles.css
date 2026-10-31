@@ -120,4 +120,25 @@ select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px soli
 @keyframes fall { to { transform: translate(var(--drift), 105vh) rotate(720deg); opacity: .8; } }
 
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+/* ---------- Mobile responsiveness ---------- */
+@media (max-width: 600px) {
+  .panel {
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .board {
+    width: 100%;
+    max-width: 414px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .cell {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+  }
+}
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .mark path, .mark circle { stroke-dashoffset: 0; } }
