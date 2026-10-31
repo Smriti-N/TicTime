@@ -24,6 +24,17 @@ python3 -m http.server 8000     # then open http://localhost:8000
 # or: npx serve
 ```
 
+## Running tests
+
+Run the automated game rule tests with Node.js:
+
+```bash
+npm test
+# or:
+node --test tests/game.test.js
+```
+
+
 ## How to play
 
 1. Player **X** goes first, then players take turns clicking an empty square.
@@ -37,15 +48,20 @@ For an in-depth explanation of component roles, data flow, and interaction diagr
 
 ```
 TicTime/
-├── index.html        # page layout
-├── css/styles.css    # all styling and animations
+├── .github/
+│   └── workflows/
+│       └── test.yml  # GitHub Actions automated test workflow
+├── index.html        # semantic layout & accessibility attributes
+├── css/styles.css    # all styling, themes, animations & focus rings
 ├── docs/
-│   └── ARCHITECTURE.md # architecture and data flow documentation
-└── js/
-    ├── game.js       # rules: win/draw detection (no DOM code)
-    ├── ai.js         # computer opponent decision engine
-    ├── ui.js         # drawing the board, scores, theme, confetti
-    └── main.js       # game state + event handlers
+│   └── ARCHITECTURE.md # architecture, component roles & data flow
+├── js/
+│   ├── game.js       # rules: win/draw detection & coordinates
+│   ├── ai.js         # computer opponent decision engine
+│   ├── ui.js         # drawing board, move history timeline, scores, theme, confetti
+│   └── main.js       # game state, time travel history + event handlers
+└── tests/
+    └── game.test.js  # automated test suite for game rules
 ```
 
 ## Troubleshooting

@@ -42,9 +42,9 @@
         <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <div class="status" id="status" aria-live="polite" aria-atomic="true"><span class="dot" aria-hidden="true"></span><span id="status-text">Player X's turn</span></div>
 
-      <div class="board" id="board" data-turn="X"></div>
+      <div class="board" id="board" data-turn="X" role="grid" aria-label="Tic-tac-toe game board"></div>
 
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
@@ -72,7 +72,12 @@
       <div class="history-header">
         <div class="history-title-wrap">
           <h2>Move history</h2>
-          <span class="history-count" id="history-count">0 moves</span>
+          <div class="history-actions">
+            <span class="history-count" id="history-count">0 moves</span>
+            <button id="undo-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+              <span aria-hidden="true">↩️</span> Undo
+            </button>
+          </div>
         </div>
       </div>
 

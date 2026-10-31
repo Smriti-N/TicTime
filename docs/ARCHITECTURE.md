@@ -21,7 +21,7 @@ TicTime is built as a zero-dependency vanilla web application emphasizing clear 
 - **`js/game.js`**
   - **Pure rules engine**. Contains no DOM interactions or UI logic.
   - Computes winning line combinations (`getWinLines`) across supported board sizes (3×3, 4×4, 5×5).
-  - Provides helpers for empty board creation (`createEmptyBoard`) and player turn switching (`nextPlayer`).
+  - Provides helpers for empty board creation (`createEmptyBoard`), cell coordinate conversions (`getCellCoordinates`), and player turn switching (`nextPlayer`).
   - Evaluates the game state (`getGameResult`) to determine whether there is a winner, a draw, or if the game is still in progress.
 
 - **`js/ai.js`**
@@ -30,16 +30,24 @@ TicTime is built as a zero-dependency vanilla web application emphasizing clear 
 
 - **`js/ui.js`**
   - **Presentation layer**. Handles all direct DOM manipulation.
-  - Dynamically builds the grid cells (`buildBoard`).
-  - Renders marks (animated SVG for X and O) inside squares (`renderBoard`).
-  - Highlights winning cells (`highlightWinningCells`), sets status messages and badges (`setStatus`), manages board lock state (`setBoardLocked`), and triggers confetti animations (`launchConfetti`).
+  - Dynamically builds the accessible grid cells (`buildBoard`) with roving tabindex, ARIA grid attributes, and full keyboard navigation (arrows, Space, Enter).
+  - Renders marks (animated SVG for X and O) inside squares and updates accessible names (`renderBoard`).
+  - Highlights winning cells (`highlightWinningCells`), highlights recent moves (`highlightLastMove`), renders the interactive move history timeline (`renderHistory`), sets status messages and badges (`setStatus`), manages board lock state (`setBoardLocked`), and triggers confetti animations (`launchConfetti`).
   - Updates scoreboard counters (`renderScores`) and applies theme attributes (`setTheme`).
 
 - **`js/main.js`**
   - **Controller and application state manager**.
-  - Owns the single state object (`board`, `currentPlayer`, `scores`, `mode`, `size`, `gameOver`, `theme`).
-  - Orchestrates events by binding DOM listeners (`handleCellClick`, `startNewGame`, `resetScores`, `toggleTheme`, `handleModeChange`, `handleSizeChange`).
+  - Owns the single state object (`board`, `currentPlayer`, `scores`, `mode`, `size`, `gameOver`, `theme`, `history`, `viewingStep`).
+  - Orchestrates events by binding DOM listeners (`handleCellClick`, `startNewGame`, `resetScores`, `toggleTheme`, `handleModeChange`, `handleSizeChange`, `handleJumpToStep`, `handleResumeCurrent`, `handleUndo`).
   - Coordinates communication between `game.js`, `ai.js`, and `ui.js`.
+
+- **`tests/game.test.js`**
+  - **Automated test suite**. Runs with Node.js built-in test runner (`node --test`).
+  - Verifies row, column, diagonal win detection, draws, in-progress games, 9th move win reporting, board coordinates, and multi-size (4×4, 5×5) rules.
+
+- **`.github/workflows/test.yml`**
+  - **Continuous Integration (CI)**. Runs the automated test suite on every git push and pull request.
+
 
 ---
 

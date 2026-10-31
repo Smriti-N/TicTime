@@ -147,3 +147,16 @@ function getCellCoordinates(index, size = 3) {
     col: (index % size) + 1,
   };
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    getWinTarget,
+    getWinLines,
+    WIN_LINES,
+    createEmptyBoard,
+    nextPlayer,
+    getGameResult,
+    getCellCoordinates,
+  };
+}
+
