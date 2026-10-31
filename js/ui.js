@@ -10,10 +10,13 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(onCellClick, size = 3) {
   boardEl.innerHTML = '';
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+  boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  boardEl.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+
+  for (let i = 0; i < size * size; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.dataset.index = i;
@@ -26,6 +29,7 @@ function buildBoard(onCellClick) {
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+    if (!cell) return;
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
@@ -34,7 +38,7 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
 }
