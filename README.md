@@ -43,10 +43,66 @@ TicTime/
     └── main.js       # game state + event handlers
 ```
 
+## Troubleshooting
+
+### 1. The page looks unchanged after I edited the code
+**Cause:** The browser is serving cached CSS/JS.
+**Fix:** Do a hard refresh: `Ctrl + Shift + R` (Windows/Linux) or `Cmd + Shift + R` (macOS). If that doesn't work, open DevTools → **Network** tab, tick **Disable cache**, and reload with DevTools open.
+
+### 2. The page is blank or something doesn't work, but there's no visible error
+**Cause:** A JavaScript error is stopping the script, and it only shows in the console.
+**Fix:** Open DevTools (`F12` or `Ctrl/Cmd + Shift + I`) → **Console**. Read the first red error, since later errors are often just side effects of it. Typical examples:
+- `Uncaught ReferenceError: x is not defined` → a typo, or the script that defines `x` loads after the one using it. Here, `main.js` must load after `game.js` and `ui.js`.
+- `Uncaught TypeError: Cannot read properties of null` → the script ran before the element existed. Put the `<script>` tags at the end of `<body>`, or add `defer`.
+
+### 3. It works when I double-click the file, but fetch/modules fail with CORS errors
+**Cause:** Opening the page via `file://` blocks `fetch()`, ES modules (`type="module"`), service workers and other features for security reasons.
+**Fix:** Serve the folder over HTTP instead:
+
+```bash
+python3 -m http.server 8000     # then open http://localhost:8000
+# or: npx serve
+```
+
+### 4. "Failed to load resource: 404 (Not Found)" for CSS, JS, or images
+**Cause:** A wrong path, wrong capitalization (paths are case-sensitive on most servers), or the file isn't where the page expects it.
+**Fix:** Check the **Network** tab for the red request and compare its URL to the file's real location. Use relative paths like `./css/styles.css` and match the exact filename casing.
+
+### 5. "Port 8000 is already in use"
+**Cause:** A previous server process is still running.
+**Fix:** Use another port (`python3 -m http.server 8080`) or stop the old process:
+
+```bash
+# macOS/Linux
+lsof -i :8000
+kill <PID>
+
+# Windows (PowerShell)
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+```
+
+## FAQ
+
+### Who plays first?
+Player **X** always goes first, then players alternate.
+
+### How are draws counted?
+A draw happens when all nine squares are filled and nobody has three in a row. The round ends with no winner. If the scoreboard doesn't show draws yet, that's a good first issue.
+
+### What counts as a win?
+Three of your marks in a row: across, down or diagonally.
+
+### How do I start a new round, and do I lose my scores?
+Click **New Game**. It clears the board, and the scoreboard keeps counting. Refreshing the page resets the scores unless you add persistence.
+
+### Can I play against the computer?
+Not yet. TicTime is two-player on one device, and a computer opponent is a great feature to contribute.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Pick an issue labelled `documentation`, `beginner` or `hard`, fix it, and open a pull request.
 
-## License
+## Licens
 
 [MIT](LICENSE)
