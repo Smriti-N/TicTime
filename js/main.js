@@ -40,6 +40,7 @@ function startNewGame() {
   state.gameOver = false;
   renderBoard(state.board);
   setBoardLocked(false);
+  setStatus("Player X's turn", 'X'); // <-- ADD THIS LINE HERE
 }
 
 function toggleTheme() {
