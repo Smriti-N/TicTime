@@ -8,8 +8,8 @@
   --x: #ff5f6d; --o: #36a2e0; --accent: #7c3aed; --accent-2: #db2777;
 }
 [data-theme="dark"] {
-  --bg-1: #0f0c29; --bg-2: #241450;
-  --text: #f5f3ff; --muted: #a5b4fc;
+  --bg-1: #0f0c29; --bg-2: #6752a1;
+  --text: #000000; --muted: #fca5df;
   --panel: rgba(255,255,255,.07); --panel-border: rgba(255,255,255,.14);
   --card-bg: rgba(255,255,255,.08); --cell-bg: rgba(255,255,255,.07); --cell-hover: rgba(255,255,255,.13);
   --shadow: 0 20px 50px rgba(0,0,0,.45);
@@ -34,14 +34,14 @@ body {
 .header { max-width: 1000px; margin: 0 auto 26px; display: flex; justify-content: space-between; align-items: center; }
 .brand { display: flex; align-items: center; gap: 14px; }
 .logo { width: 54px; height: 54px; filter: drop-shadow(0 8px 14px rgba(54,162,224,.4)); }
-h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; background: linear-gradient(90deg, var(--x), var(--accent), var(--o)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; background: linear-gradient(90deg, var(--x) var(--o)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .tagline { margin: 2px 0 0; color: var(--muted); font-size: .85rem; }
 .icon-btn { width: 46px; height: 46px; border-radius: 14px; border: 1px solid var(--panel-border); background: var(--panel); font-size: 1.3rem; cursor: pointer; box-shadow: var(--shadow); backdrop-filter: blur(12px); transition: transform .2s; }
 .icon-btn:hover { transform: rotate(18deg) scale(1.08); }
 
 /* ---------- Layout ---------- */
 .layout { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: max-content 1fr; gap: 24px; align-items: start; }
-.panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+.panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,0.05)); backdrop-filter: blur(18px); }
 .history h2 { margin: 0 0 8px; font-size: 1.15rem; }
 .muted { color: var(--muted); font-size: .9rem; line-height: 1.5; margin: 0; }
 
