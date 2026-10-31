@@ -26,6 +26,8 @@ function handleCellClick(index) {
     launchConfetti();
   } else if (result.status === 'draw') {
     state.gameOver = true;
+    state.scores.draws++;
+    renderScores(state.scores);
     setStatus("It's a draw!", '');
     setBoardLocked(true);
   } else {
