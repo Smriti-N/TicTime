@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TicTime · Tic-Tac-Toe</title>
+
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="description" content="Two players. Nine squares. One clock ticking." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TicTime" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -31,7 +42,10 @@
         <p class="tagline">Two players. Nine squares. One clock ticking.</p>
       </div>
     </div>
-    <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
+    <div class="header-actions">
+      <button id="install-btn" class="btn btn-install" aria-label="Install app">📲 Install App</button>
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
+    </div>
   </header>
 
   <main class="layout">
@@ -70,6 +84,29 @@
   </main>
 
   <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+
+  <!-- Offline status indicator -->
+  <div id="offline-toast" class="offline-toast" hidden>⚡ You are offline · Offline play ready</div>
+
+  <!-- Install Guide Modal -->
+  <div id="install-modal" class="modal-backdrop" hidden>
+    <div class="modal-card">
+      <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <svg class="logo" viewBox="0 0 64 64" aria-hidden="true" style="width:44px;height:44px">
+          <rect width="64" height="64" rx="18" fill="url(#grad-o)"/>
+          <path d="M24 12v40M40 12v40M12 24h40M12 40h40" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+          <path d="M15 15l6 6M21 15l-6 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="47" cy="47" r="4.5" fill="none" stroke="#fff" stroke-width="3.5"/>
+        </svg>
+        <h3 class="modal-title">Install TicTime</h3>
+      </div>
+      <div id="install-guide-content" class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="modal-ok-btn" class="btn btn-primary" style="width:100%">Got it!</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
