@@ -9,7 +9,7 @@ const state = {
 };
 
 function handleCellClick(index) {
-  if (state.gameOver) return;
+    if (state.gameOver || state.board[index] !== null) return;
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
