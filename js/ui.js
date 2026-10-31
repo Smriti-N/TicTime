@@ -34,7 +34,7 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
 }
@@ -53,6 +53,10 @@ function renderScores(scores) {
   document.getElementById('score-x').textContent = scores.X;
   document.getElementById('score-o').textContent = scores.O;
   document.getElementById('score-draws').textContent = scores.draws;
+}
+
+function setGameMode(mode) {
+  document.getElementById('score-o-label').textContent = mode === 'computer' ? 'Computer' : 'Player O';
 }
 
 function setTheme(theme) {
