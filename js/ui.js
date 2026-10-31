@@ -3,6 +3,8 @@
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const statusTextEl = document.getElementById('status-text');
+const historyListEl = document.getElementById('move-history');
+const historyEmptyEl = document.getElementById('history-empty');
 let cellEls = [];
 
 const MARKS = {
@@ -26,6 +28,7 @@ function buildBoard(onCellClick) {
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+    cell.classList.remove('win');
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
@@ -33,8 +36,30 @@ function renderBoard(board) {
   });
 }
 
+function renderHistory(history, currentIndex, onSelect) {
+  historyListEl.replaceChildren();
+  historyEmptyEl.hidden = history.length > 0;
+
+  history.forEach((move, index) => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'history-move';
+    button.textContent = `${index + 1}. ${move.player} -> square ${move.square + 1}`;
+
+    if (index + 1 === currentIndex) {
+      button.classList.add('is-current');
+      button.setAttribute('aria-current', 'step');
+    }
+
+    button.addEventListener('click', () => onSelect(index));
+    item.appendChild(button);
+    historyListEl.appendChild(item);
+  });
+}
+
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
 }
