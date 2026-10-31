@@ -1,0 +1,14 @@
+{
+  "name": "tictime",
+  "version": "1.0.0",
+  "description": "A colourful, animated Tic-Tac-Toe game built with plain HTML, CSS and JavaScript.",
+  "scripts": {
+    "test": "node --test tests/game.test.js"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "game",
+    "tests"
+  ],
+  "license": "MIT"
+}
