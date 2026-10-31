@@ -69,10 +69,36 @@
     </aside>
   </main>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+  <footer class="footer">
+
+    <div class="footer-content">
+
+      <h2 class="footer-logo">TicTime</h2>
+
+      <p class="footer-description">
+        A classic Tic-Tac-Toe experience with a modern touch.
+      </p>
+
+      <div class="footer-divider"></div>
+
+      <p class="copyright">
+        © <span id="year"></span> TicTime. All rights reserved.
+      </p>
+
+      <p class="footer-credit">
+        Designed for fun. Built for two players.
+      </p>
+
+    </div>
+
+  </footer>
 
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js"></script>
+  <script>
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+</script>
 </body>
 </html>
