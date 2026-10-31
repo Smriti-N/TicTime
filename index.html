@@ -68,9 +68,29 @@
       </div>
     </section>
 
-    <aside class="panel history">
-      <h2>Move history</h2>
-      <p class="muted">Coming soon. Every move will be listed here so you can jump back in time.</p>
+    <aside class="panel history" aria-label="Move history">
+      <div class="history-header">
+        <div class="history-title-wrap">
+          <h2>Move history</h2>
+          <span class="history-count" id="history-count">0 moves</span>
+        </div>
+      </div>
+
+      <div class="history-body" id="history-body">
+        <div class="history-empty" id="history-empty">
+          <div class="history-empty-icon" aria-hidden="true">⏱️</div>
+          <p class="history-empty-title">No moves yet</p>
+          <p class="muted">Every move will be listed here so you can jump back in time.</p>
+        </div>
+        <ol class="history-list" id="history-list" aria-label="Moves list" style="display: none;"></ol>
+      </div>
+
+      <div class="history-footer" id="history-footer" style="display: none;">
+        <button id="history-current-btn" class="btn btn-ghost history-resume-btn" type="button">
+          <span>Jump to latest move</span>
+          <span aria-hidden="true">⏩</span>
+        </button>
+      </div>
     </aside>
   </main>
 

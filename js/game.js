@@ -129,3 +129,21 @@ function getGameResult(board, size = 3) {
 
   return { status: 'playing', winner: null, line: null };
 }
+
+/**
+ * Calculates 1-based row and column coordinates for a given board index.
+ *
+ * @param {number} index - The zero-based cell index.
+ * @param {number} [size=3] - The board dimension.
+ * @returns {{row: number, col: number}} 1-based row and column object.
+ *
+ * @example
+ * getCellCoordinates(4, 3); // returns { row: 2, col: 2 }
+ * getCellCoordinates(0, 3); // returns { row: 1, col: 1 }
+ */
+function getCellCoordinates(index, size = 3) {
+  return {
+    row: Math.floor(index / size) + 1,
+    col: (index % size) + 1,
+  };
+}
