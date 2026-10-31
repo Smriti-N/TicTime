@@ -47,7 +47,10 @@ function toggleTheme() {
   setTheme(state.theme);
 }
 
-// TODO: wire up the "Reset Scores" button (#reset-scores-btn)
+document.getElementById('reset-scores-btn').addEventListener('click', () => {
+  state.scores = { X: 0, O: 0, draws: 0 };
+  renderScores(state.scores);
+});
 
 buildBoard(handleCellClick);
 renderBoard(state.board);

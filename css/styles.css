@@ -41,7 +41,7 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 
 /* ---------- Layout ---------- */
 .layout { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: max-content 1fr; gap: 24px; align-items: start; }
-.panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+.panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); backdrop-filter: blur(18px); min-width: 0;}
 .history h2 { margin: 0 0 8px; font-size: 1.15rem; }
 .muted { color: var(--muted); font-size: .9rem; line-height: 1.5; margin: 0; }
 
@@ -60,8 +60,25 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 .status[data-player="O"] .dot { background: var(--o); box-shadow: 0 0 10px var(--o); }
 
 /* ---------- Board ---------- */
-.board { display: grid; grid-template-columns: repeat(3, 130px); gap: 12px; width: 414px; margin: 0 auto 22px; }
-.cell { height: 130px; background: #ffffff; border-radius: 22px; display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 18px rgba(0,0,0,.08); transition: transform .15s, background .2s; }
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 414px;
+    margin: 0 auto 22px;
+}
+.cell {
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    background: #ffffff;
+    border-radius: 22px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    transition: transform .15s, background .2s;
+}
 .cell:empty:hover { transform: translateY(-3px); background-color: var(--cell-hover); }
 .board.is-over .cell { cursor: default; }
 /* faint preview of the mark you are about to place */
