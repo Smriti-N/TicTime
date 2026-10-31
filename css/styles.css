@@ -60,8 +60,26 @@ h1 { margin: 0; font-size: 2.1rem; font-weight: 800; letter-spacing: -.03em; bac
 .status[data-player="O"] .dot { background: var(--o); box-shadow: 0 0 10px var(--o); }
 
 /* ---------- Board ---------- */
-.board { display: grid; grid-template-columns: repeat(3, 130px); gap: 12px; width: 414px; margin: 0 auto 22px; }
-.cell { height: 130px; background: #ffffff; border-radius: 22px; display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 18px rgba(0,0,0,.08); transition: transform .15s, background .2s; }
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 414px;
+  margin: 0 auto 22px;
+}
+.cell {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  background: #ffffff;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+  transition: transform .15s, background .2s;
+}
 .cell:empty:hover { transform: translateY(-3px); background-color: var(--cell-hover); }
 .board.is-over .cell { cursor: default; }
 /* faint preview of the mark you are about to place */
@@ -152,3 +170,44 @@ select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px soli
 
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .mark path, .mark circle { stroke-dashoffset: 0; } }
+@media (max-width: 500px) {
+
+  body {
+    padding: 20px 12px;
+    overflow-x: hidden;
+  }
+
+  .layout {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .board {
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+  }
+
+  .cell {
+    border-radius: 16px;
+  }
+
+  .mark {
+    width: 75%;
+    height: 75%;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+  }
+
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
