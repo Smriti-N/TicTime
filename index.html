@@ -28,7 +28,7 @@
       </svg>
       <div>
         <h1>TicTime</h1>
-        <p class="tagline">Two players. Nine squares. One clock ticking.</p>
+        <p class="tagline">Two players. Bigger boards. One clock ticking.</p>
       </div>
     </div>
     <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
@@ -57,9 +57,13 @@
           <span class="badge">Coming soon</span>
         </label>
         <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
-          <span class="badge">Coming soon</span>
+          <select id="size-select" aria-describedby="board-rules">
+            <option value="3">3 × 3</option>
+            <option value="4">4 × 4</option>
+            <option value="5">5 × 5</option>
+          </select>
         </label>
+        <span class="board-rules" id="board-rules">3 × 3: 3 in a row to win. 4 × 4 and 5 × 5: 4 in a row.</span>
       </div>
     </section>
 
