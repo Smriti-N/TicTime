@@ -38,6 +38,7 @@ function startNewGame() {
   state.board = createEmptyBoard();
   state.currentPlayer = 'X';
   state.gameOver = false;
+  setStatus("Player X's turn", 'X');
   renderBoard(state.board);
   setBoardLocked(false);
 }
