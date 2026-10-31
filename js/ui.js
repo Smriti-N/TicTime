@@ -10,10 +10,11 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(onCellClick, size = 3) {
   boardEl.innerHTML = '';
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+  boardEl.style.setProperty('--board-size', size);
+  for (let i = 0; i < size * size; i++) {
     const cell = document.createElement('button');
     cell.type = 'button';
     cell.className = 'cell';

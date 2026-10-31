@@ -79,8 +79,11 @@
           <span class="badge">Coming soon</span>
         </label>
         <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
-          <span class="badge">Coming soon</span>
+          <select id="size-select" aria-label="Choose board size">
+            <option value="3">3 × 3</option>
+            <option value="4">4 × 4</option>
+            <option value="5">5 × 5</option>
+          </select>
         </label>
         <label class="option">Animation
           <select id="animation-theme-select" aria-label="Choose animation theme">
@@ -129,7 +132,16 @@
     </div>
   </section>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+  <footer class="footer">
+    <div class="footer-brand">
+      <div>
+        <strong>TicTime</strong>
+        <p>© 2026</p>
+        <p class="footer-credit">Made at Hack Day, NIT Jamshedpur</p>
+      </div>
+    </div>
+    <a class="demo-link focus-ring" href="https://github.com/2026ugce090-dotcom/TicTime" target="_blank" rel="noopener noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+  </footer>
 
   <script src="js/theme.js"></script>
   <script src="js/animations.js"></script>
