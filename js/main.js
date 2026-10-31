@@ -49,11 +49,9 @@ function toggleTheme() {
 
 // TODO: wire up the "Reset Scores" button (#reset-scores-btn)
 function resetGame() {
-  state.board = createEmptyBoard();
-  // state.currentPlayer = 'X';
-  state.gameOver = false;
-  renderBoard(state.board);
-  setBoardLocked(false);
+ state.scores = { X: 0, O: 0, draws: 0 };
+ renderScores(state.scores);
+ 
 }
 
 buildBoard(handleCellClick);
@@ -62,4 +60,4 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-document.getElementById("reset-scores-btn").addEventListener("click",resetGame);
+document.getElementById("reset-scores-btn").addEventListener('click',resetGame);
