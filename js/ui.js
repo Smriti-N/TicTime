@@ -14,10 +14,34 @@ function buildBoard(onCellClick) {
   boardEl.innerHTML = '';
   cellEls = [];
   for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
+    const cell = document.createElement('button');
+    cell.type = 'button';
     cell.className = 'cell';
     cell.dataset.index = i;
-    cell.addEventListener('click', () => onCellClick(i));
+    cell.tabIndex = i === 0 ? 0 : -1;
+    cell.setAttribute('aria-label', `Row ${Math.floor(i / 3) + 1}, column ${i % 3 + 1}, empty`);
+    cell.addEventListener('focus', () => {
+      cellEls.forEach((item) => { item.tabIndex = item === cell ? 0 : -1; });
+    });
+    cell.addEventListener('keydown', (event) => {
+      const row = Math.floor(i / 3);
+      const column = i % 3;
+      const targets = {
+        ArrowLeft: row * 3 + Math.max(0, column - 1),
+        ArrowRight: row * 3 + Math.min(2, column + 1),
+        ArrowUp: Math.max(0, row - 1) * 3 + column,
+        ArrowDown: Math.min(2, row + 1) * 3 + column,
+        Home: row * 3,
+        End: row * 3 + 2,
+      };
+      if (Object.hasOwn(targets, event.key)) {
+        event.preventDefault();
+        cellEls[targets[event.key]].focus();
+      }
+    });
+    cell.addEventListener('click', () => {
+      if (cell.getAttribute('aria-disabled') !== 'true') onCellClick(i);
+    });
     boardEl.appendChild(cell);
     cellEls.push(cell);
   }
@@ -26,10 +50,13 @@ function buildBoard(onCellClick) {
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+    cell.setAttribute('aria-label', `Row ${Math.floor(i / 3) + 1}, column ${i % 3 + 1}, ${value || 'empty'}`);
+    cell.setAttribute('aria-disabled', String(Boolean(value) || boardEl.classList.contains('is-over')));
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
     cell.innerHTML = value ? MARKS[value] : '';
+    cell.querySelector('svg')?.setAttribute('aria-hidden', 'true');
   });
 }
 
@@ -47,6 +74,9 @@ function setStatus(text, player) {
 
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
+  cellEls.forEach((cell) => {
+    cell.setAttribute('aria-disabled', String(locked || Boolean(cell.dataset.mark)));
+  });
 }
 
 function renderScores(scores) {

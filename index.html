@@ -42,9 +42,10 @@
         <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"><span class="dot" aria-hidden="true"></span><span id="status-text">Player X's turn</span></div>
 
-      <div class="board" id="board" data-turn="X"></div>
+      <p id="board-help" class="board-help">Use arrow keys to move between squares. Press Enter or Space to play.</p>
+      <div class="board" id="board" data-turn="X" role="group" aria-label="Tic-tac-toe board" aria-describedby="board-help"></div>
 
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
