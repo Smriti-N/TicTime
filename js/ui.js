@@ -5,19 +5,80 @@ const statusEl = document.getElementById('status');
 const statusTextEl = document.getElementById('status-text');
 let cellEls = [];
 
+const CELL_POSITIONS = [
+  'Top Left (Row 1, Column 1)',
+  'Top Center (Row 1, Column 2)',
+  'Top Right (Row 1, Column 3)',
+  'Middle Left (Row 2, Column 1)',
+  'Center (Row 2, Column 2)',
+  'Middle Right (Row 2, Column 3)',
+  'Bottom Left (Row 3, Column 1)',
+  'Bottom Center (Row 3, Column 2)',
+  'Bottom Right (Row 3, Column 3)'
+];
+
 const MARKS = {
-  X: '<svg class="mark" viewBox="0 0 100 100"><path pathLength="100" d="M26 26L74 74"/><path pathLength="100" d="M74 26L26 74"/></svg>',
-  O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
+  X: '<svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="100" d="M26 26L74 74"/><path pathLength="100" d="M74 26L26 74"/></svg>',
+  O: '<svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
+
+function announce(message) {
+  const srEl = document.getElementById('sr-announcements');
+  if (!srEl) return;
+  srEl.textContent = '';
+  setTimeout(() => {
+    srEl.textContent = message;
+  }, 40);
+}
+
+function handleGridNavigation(e, index) {
+  let targetIndex = null;
+  const row = Math.floor(index / 3);
+
+  switch (e.key) {
+    case 'ArrowRight':
+      targetIndex = index < 8 ? index + 1 : 0;
+      break;
+    case 'ArrowLeft':
+      targetIndex = index > 0 ? index - 1 : 8;
+      break;
+    case 'ArrowDown':
+      targetIndex = index + 3 <= 8 ? index + 3 : (index % 3);
+      break;
+    case 'ArrowUp':
+      targetIndex = index - 3 >= 0 ? index - 3 : (6 + (index % 3));
+      break;
+    case 'Home':
+      targetIndex = row * 3;
+      break;
+    case 'End':
+      targetIndex = row * 3 + 2;
+      break;
+    default:
+      return;
+  }
+
+  e.preventDefault();
+  cellEls.forEach((c) => (c.tabIndex = -1));
+  cellEls[targetIndex].tabIndex = 0;
+  cellEls[targetIndex].focus();
+}
 
 function buildBoard(onCellClick) {
   boardEl.innerHTML = '';
   cellEls = [];
   for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
+    const cell = document.createElement('button');
+    cell.type = 'button';
     cell.className = 'cell';
     cell.dataset.index = i;
+    cell.setAttribute('role', 'gridcell');
+    cell.setAttribute('aria-label', `${CELL_POSITIONS[i]}, empty`);
+    cell.tabIndex = i === 0 ? 0 : -1; // Roving tabindex
+
     cell.addEventListener('click', () => onCellClick(i));
+    cell.addEventListener('keydown', (e) => handleGridNavigation(e, i));
+
     boardEl.appendChild(cell);
     cellEls.push(cell);
   }
@@ -30,6 +91,13 @@ function renderBoard(board) {
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
     cell.innerHTML = value ? MARKS[value] : '';
+    if (value) {
+      cell.setAttribute('aria-label', `${CELL_POSITIONS[i]}, marked ${value}`);
+      cell.setAttribute('aria-disabled', 'true');
+    } else {
+      cell.setAttribute('aria-label', `${CELL_POSITIONS[i]}, empty`);
+      cell.removeAttribute('aria-disabled');
+    }
   });
 }
 
@@ -47,6 +115,13 @@ function setStatus(text, player) {
 
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
+  cellEls.forEach((cell) => {
+    if (locked) {
+      cell.setAttribute('aria-disabled', 'true');
+    } else if (!cell.dataset.mark) {
+      cell.removeAttribute('aria-disabled');
+    }
+  });
 }
 
 function renderScores(scores) {

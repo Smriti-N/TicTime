@@ -50,15 +50,21 @@
 
   <main class="layout">
     <section class="panel game">
-      <div class="scoreboard">
+      <div class="scoreboard" role="region" aria-label="Scoreboard">
         <div class="score-card x"><span class="score-label">Player X</span><span class="score-value" id="score-x">0</span></div>
         <div class="score-card"><span class="score-label">Draws</span><span class="score-value" id="score-draws">0</span></div>
         <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <div class="status" id="status" aria-live="polite" aria-atomic="true">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="status-text">Player X's turn</span>
+      </div>
 
-      <div class="board" id="board" data-turn="X"></div>
+      <!-- Dedicated screen reader live region for instant move & result announcements -->
+      <div id="sr-announcements" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+      <div class="board" id="board" role="grid" aria-label="Tic-Tac-Toe Board" data-turn="X"></div>
 
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>

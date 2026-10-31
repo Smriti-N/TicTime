@@ -9,8 +9,9 @@ const state = {
 };
 
 function handleCellClick(index) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.board[index] !== null) return;
 
+  const positionName = CELL_POSITIONS[index];
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
 
@@ -24,13 +25,17 @@ function handleCellClick(index) {
     setBoardLocked(true);
     renderScores(state.scores);
     launchConfetti();
+    announce(`Player ${result.winner} marked ${positionName} and won the game!`);
   } else if (result.status === 'draw') {
     state.gameOver = true;
     setStatus("It's a draw!", '');
     setBoardLocked(true);
+    announce(`Player ${state.currentPlayer} marked ${positionName}. It's a draw!`);
   } else {
+    const prevPlayer = state.currentPlayer;
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
+    announce(`Player ${prevPlayer} marked ${positionName}. Player ${state.currentPlayer}'s turn.`);
   }
 }
 
@@ -40,6 +45,12 @@ function startNewGame() {
   state.gameOver = false;
   renderBoard(state.board);
   setBoardLocked(false);
+  announce("New game started. Board is empty. Player X's turn.");
+  if (cellEls && cellEls[0]) {
+    cellEls.forEach((c) => (c.tabIndex = -1));
+    cellEls[0].tabIndex = 0;
+    cellEls[0].focus();
+  }
 }
 
 function toggleTheme() {
