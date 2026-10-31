@@ -7,12 +7,18 @@
   --shadow: 0 20px 50px rgba(91,70,160,.18);
   --x: #ff5f6d; --o: #36a2e0; --accent: #7c3aed; --accent-2: #db2777;
 }
-[data-theme="dark"] {
-  --bg-1: #0f0c29; --bg-2: #241450;
-  --text: #f5f3ff; --muted: #a5b4fc;
-  --panel: rgba(255,255,255,.07); --panel-border: rgba(255,255,255,.14);
-  --card-bg: rgba(255,255,255,.08); --cell-bg: rgba(255,255,255,.07); --cell-hover: rgba(255,255,255,.13);
-  --shadow: 0 20px 50px rgba(0,0,0,.45);
+[data-theme="dark"] .score-card,
+[data-theme="dark"] .status,
+[data-theme="dark"] .cell {
+  background: rgba(30, 41, 59, 0.7); /* Dark glass-style background */
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc; /* Readable light text */
+}
+
+[data-theme="dark"] .score-value,
+[data-theme="dark"] .score-label,
+[data-theme="dark"] #status-text {
+  color: #f8fafc;
 }
 
 * { box-sizing: border-box; }

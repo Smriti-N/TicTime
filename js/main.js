@@ -10,6 +10,9 @@ const state = {
 
 function handleCellClick(index) {
   if (state.gameOver) return;
+  
+  // FIX: Do nothing if the clicked square already has a mark
+  if (state.board[index] !== null) return; 
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
@@ -40,6 +43,7 @@ function startNewGame() {
   state.gameOver = false;
   renderBoard(state.board);
   setBoardLocked(false);
+  setStatus("Player X's turn", 'X'); // <-- ADD THIS LINE HERE
 }
 
 function toggleTheme() {
