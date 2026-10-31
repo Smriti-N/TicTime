@@ -42,9 +42,9 @@
         <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <div class="status" id="status" aria-live="polite" aria-atomic="true"><span class="dot" aria-hidden="true"></span><span id="status-text">Player X's turn</span></div>
 
-      <div class="board" id="board" data-turn="X"></div>
+      <div class="board" id="board" data-turn="X" role="grid" aria-label="Tic-tac-toe game board"></div>
 
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
@@ -53,25 +53,62 @@
 
       <div class="options">
         <label class="option">Mode
-          <select id="mode-select" disabled><option>Two players</option><option>vs Computer</option></select>
-          <span class="badge">Coming soon</span>
+          <select id="mode-select">
+            <option value="pvp">Two players</option>
+            <option value="ai">vs Computer</option>
+          </select>
         </label>
         <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
-          <span class="badge">Coming soon</span>
+          <select id="size-select">
+            <option value="3">3 × 3</option>
+            <option value="4">4 × 4</option>
+            <option value="5">5 × 5</option>
+          </select>
         </label>
       </div>
     </section>
 
-    <aside class="panel history">
-      <h2>Move history</h2>
-      <p class="muted">Coming soon. Every move will be listed here so you can jump back in time.</p>
+    <aside class="panel history" aria-label="Move history">
+      <div class="history-header">
+        <div class="history-title-wrap">
+          <h2>Move history</h2>
+          <div class="history-actions">
+            <span class="history-count" id="history-count">0 moves</span>
+            <button id="undo-btn" class="btn btn-ghost btn-sm" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+              <span aria-hidden="true">↩️</span> Undo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-body" id="history-body">
+        <div class="history-empty" id="history-empty">
+          <div class="history-empty-icon" aria-hidden="true">⏱️</div>
+          <p class="history-empty-title">No moves yet</p>
+          <p class="muted">Every move will be listed here so you can jump back in time.</p>
+        </div>
+        <ol class="history-list" id="history-list" aria-label="Moves list" style="display: none;"></ol>
+      </div>
+
+      <div class="history-footer" id="history-footer" style="display: none;">
+        <button id="history-current-btn" class="btn btn-ghost history-resume-btn" type="button">
+          <span>Jump to latest move</span>
+          <span aria-hidden="true">⏩</span>
+        </button>
+      </div>
     </aside>
   </main>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+  <footer class="footer">
+    <p>
+      <strong>TicTime</strong> · &copy; 2026 · 
+      <a href="https://github.com/Smriti-N/TicTime" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+    </p>
+    <p class="footer-bonus">Made at Hack Day, NIT Jamshedpur</p>
+  </footer>
 
   <script src="js/game.js"></script>
+  <script src="js/ai.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js"></script>
 </body>
