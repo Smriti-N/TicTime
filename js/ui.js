@@ -10,10 +10,12 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(size, onCellClick) {
   boardEl.innerHTML = '';
+  boardEl.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
+  boardEl.style.gridTemplateRows = `repeat(${size}, minmax(0, 1fr))`;
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < size * size; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.dataset.index = i;
@@ -34,8 +36,8 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    cellEls[line[i]].classList.add('win');
+  for (const index of line) {
+    cellEls[index].classList.add('win');
   }
 }
 

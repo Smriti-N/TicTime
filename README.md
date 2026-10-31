@@ -27,8 +27,8 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ## How to play
 
 1. Player **X** goes first, then players take turns clicking an empty square.
-2. Get three of your marks in a row (across, down or diagonally) to win.
-3. If all nine squares fill up with no winner, it's a draw.
+2. Choose a 3 × 3, 4 × 4 or 5 × 5 board. Get a full row, column or diagonal of your marks to win.
+3. If the board fills up with no winner, it's a draw.
 4. **New Game** clears the board; the scoreboard keeps counting.
 
 ## Project structure

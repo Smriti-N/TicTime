@@ -1,7 +1,8 @@
 // Game state and event wiring. Connects game.js (rules) to ui.js (screen).
 
 const state = {
-  board: createEmptyBoard(),
+  boardSize: 3,
+  board: createEmptyBoard(3),
   currentPlayer: 'X',
   gameOver: false,
   scores: { X: 0, O: 0, draws: 0 },
@@ -26,8 +27,10 @@ function handleCellClick(index) {
     launchConfetti();
   } else if (result.status === 'draw') {
     state.gameOver = true;
+    state.scores.draws++;
     setStatus("It's a draw!", '');
     setBoardLocked(true);
+    renderScores(state.scores);
   } else {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
@@ -35,11 +38,18 @@ function handleCellClick(index) {
 }
 
 function startNewGame() {
-  state.board = createEmptyBoard();
+  state.board = createEmptyBoard(state.boardSize);
   state.currentPlayer = 'X';
   state.gameOver = false;
   renderBoard(state.board);
   setBoardLocked(false);
+  setStatus("Player X's turn", 'X');
+}
+
+function changeBoardSize(event) {
+  state.boardSize = Number(event.target.value);
+  buildBoard(state.boardSize, handleCellClick);
+  startNewGame();
 }
 
 function resetScores() {
@@ -52,10 +62,11 @@ function toggleTheme() {
   setTheme(state.theme);
 }
 
-buildBoard(handleCellClick);
+buildBoard(state.boardSize, handleCellClick);
 renderBoard(state.board);
 renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('reset-scores-btn').addEventListener('click', resetScores);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('size-select').addEventListener('change', changeBoardSize);
