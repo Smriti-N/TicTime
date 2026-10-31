@@ -34,13 +34,19 @@ function handleCellClick(index) {
   }
 }
 
+
 function startNewGame() {
   state.board = createEmptyBoard();
   state.currentPlayer = 'X';
   state.gameOver = false;
+
   renderBoard(state.board);
   setBoardLocked(false);
+
+  // Reset the status pill and active-player indicator.
+  setStatus("Player X's turn", 'X');
 }
+
 
 function toggleTheme() {
   state.theme = state.theme === 'light' ? 'dark' : 'light';
