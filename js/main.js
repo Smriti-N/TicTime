@@ -1,7 +1,6 @@
-// Game state and event wiring. Connects game.js (rules) to ui.js (screen).
-
 const state = {
-  board: createEmptyBoard(),
+  board: createEmptyBoard(3),
+  size: 3,
   currentPlayer: 'X',
   gameOver: false,
   scores: { X: 0, O: 0, draws: 0 },
@@ -9,7 +8,7 @@ const state = {
 };
 
 function handleCellClick(index) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.board[index] !== null) return;
 
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
@@ -35,11 +34,18 @@ function handleCellClick(index) {
 }
 
 function startNewGame() {
-  state.board = createEmptyBoard();
+  state.board = createEmptyBoard(state.size);
   state.currentPlayer = 'X';
   state.gameOver = false;
   renderBoard(state.board);
   setBoardLocked(false);
+  setStatus("Player X's turn", 'X');
+}
+
+function handleSizeChange(e) {
+  state.size = parseInt(e.target.value, 10);
+  buildBoard(handleCellClick, state.size);
+  startNewGame();
 }
 
 function toggleTheme() {
@@ -47,11 +53,18 @@ function toggleTheme() {
   setTheme(state.theme);
 }
 
-// TODO: wire up the "Reset Scores" button (#reset-scores-btn)
+function resetGame() {
+  state.scores = { X: 0, O: 0, draws: 0 };
+  renderScores(state.scores);
+}
 
-buildBoard(handleCellClick);
+// Initial setup
+buildBoard(handleCellClick, state.size);
 renderBoard(state.board);
 renderScores(state.scores);
 setStatus("Player X's turn", 'X');
+
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('reset-scores-btn').addEventListener('click', resetGame);
+document.getElementById('size-select').addEventListener('change', handleSizeChange);
