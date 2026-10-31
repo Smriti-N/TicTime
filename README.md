@@ -43,6 +43,12 @@ TicTime/
     └── main.js       # game state + event handlers
 ```
 
+## Running tests
+
+With Node.js 22 or newer installed, run `node --test` from the repository root.
+No dependency installation is needed. GitHub Actions runs the same tests on every push and pull request.
+The app still runs by opening `index.html` directly in a browser.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Pick an issue labelled `documentation`, `beginner` or `hard`, fix it, and open a pull request.
