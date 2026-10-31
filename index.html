@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- shared colour gradients used by the X and O marks -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <linearGradient id="grad-x" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5f6d"/><stop offset="1" stop-color="#ffc371"/></linearGradient>
@@ -28,7 +27,7 @@
       </svg>
       <div>
         <h1>TicTime</h1>
-        <p class="tagline">Two players. Nine squares. One clock ticking.</p>
+        <p class="tagline">Two players. Bigger boards. One clock ticking.</p>
       </div>
     </div>
     <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
@@ -48,6 +47,7 @@
 
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
+        <button id="undo-btn" class="btn btn-ghost" disabled>Undo</button>
         <button id="reset-scores-btn" class="btn btn-ghost">Reset Scores</button>
       </div>
 
@@ -57,19 +57,24 @@
           <span class="badge">Coming soon</span>
         </label>
         <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
-          <span class="badge">Coming soon</span>
+          <select id="size-select" aria-describedby="board-rules">
+            <option value="3">3 × 3</option>
+            <option value="4">4 × 4</option>
+            <option value="5">5 × 5</option>
+          </select>
         </label>
+        <span class="board-rules" id="board-rules">3 × 3: 3 in a row to win. 4 × 4 and 5 × 5: 4 in a row.</span>
       </div>
     </section>
 
     <aside class="panel history">
       <h2>Move history</h2>
-      <p class="muted">Coming soon. Every move will be listed here so you can jump back in time.</p>
+      <p class="muted">Select a move to view the board at that point in the game.</p>
+      <ol class="move-history" id="move-history" aria-label="Moves in this game"></ol>
     </aside>
   </main>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+  <footer class="footer"></footer>
 
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
