@@ -10,10 +10,14 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(size = 3, onCellClick) {
   boardEl.innerHTML = '';
+  boardEl.dataset.size = size;
+  boardEl.style.setProperty('--board-size', size);
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
+
+  const totalCells = size * size;
+  for (let i = 0; i < totalCells; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.dataset.index = i;
@@ -26,6 +30,7 @@ function buildBoard(onCellClick) {
 function renderBoard(board) {
   board.forEach((value, i) => {
     const cell = cellEls[i];
+    if (!cell) return;
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
@@ -34,8 +39,11 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    cellEls[line[i]].classList.add('win');
+  if (!line) return;
+  for (let i = 0; i < line.length; i++) {
+    if (cellEls[line[i]]) {
+      cellEls[line[i]].classList.add('win');
+    }
   }
 }
 
@@ -47,6 +55,10 @@ function setStatus(text, player) {
 
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
+}
+
+function setAiThinking(thinking) {
+  boardEl.classList.toggle('is-thinking', thinking);
 }
 
 function renderScores(scores) {
