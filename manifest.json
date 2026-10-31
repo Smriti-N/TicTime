@@ -1,0 +1,15 @@
+{
+  "name": "TicTime",
+  "short_name": "TicTime",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8fd",
+  "theme_color": "#5b86e5",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='18' fill='%235b86e5'/><path d='M18 18 L46 46 M46 18 L18 46' stroke='%23ffffff' stroke-width='6' stroke-linecap='round'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
