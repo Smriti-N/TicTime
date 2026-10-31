@@ -6,12 +6,17 @@ const state = {
   gameOver: false,
   scores: { X: 0, O: 0, draws: 0 },
   theme: 'light',
+  movePlayed : false
 };
 
 function handleCellClick(index) {
   if (state.gameOver) return;
+  
+  if (state.board[index] == null) {
+    state.board[index] = state.currentPlayer;
+    state.movePlayed = true;
+  }
 
-  state.board[index] = state.currentPlayer;
   renderBoard(state.board);
 
   const result = getGameResult(state.board);
@@ -27,10 +32,13 @@ function handleCellClick(index) {
   } else if (result.status === 'draw') {
     state.gameOver = true;
     setStatus("It's a draw!", '');
+    state.scores['draws']++;
+    renderScores(state.scores);
     setBoardLocked(true);
-  } else {
+  } else if (state.movePlayed) {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
+    state.movePlayed = false;
   }
 }
 
