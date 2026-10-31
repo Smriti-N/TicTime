@@ -35,13 +35,16 @@ python3 -m http.server 8000     # then open http://localhost:8000
 
 ```
 TicTime/
-├── index.html        # page layout
-├── css/styles.css    # all styling and animations
-└── js/
-    ├── game.js       # rules: win/draw detection (no DOM code)
-    ├── ui.js         # drawing the board, scores, theme, confetti
-    └── main.js       # game state + event handlers
-```
+├── css/
+│   └── style.css
+├── docs/
+│   └── ARCHITECTURE.md     Detailed design & data flow documentation
+├── js/
+│   ├── game.js             #Core game logic & rule validation
+│   ├── main.js             #Event handling & controller orchestration
+│   └── ui.js               #DOM manipulation & display updates
+├── index.html
+└── README.md
 
 ## Contributing
 
