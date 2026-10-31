@@ -34,7 +34,8 @@ function renderBoard(board) {
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  // FIX: Loop through all elements in the line array so all 3 winning cells glow
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
 }
