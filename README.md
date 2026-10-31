@@ -2,11 +2,12 @@
 
 A colourful, animated Tic-Tac-Toe game built with plain **HTML, CSS and JavaScript**. No frameworks, no build step, no installs.
 
-> 🎯 **Hack Day project.** TicTime is *deliberately incomplete*: a few things are broken and a few features are missing. Each one is an issue waiting for you. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+> 🎯 **Hack Day project.** TicTime is _deliberately incomplete_: a few things are broken and a few features are missing. Each one is an issue waiting for you. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
 ## Screenshots
 
-_Coming soon._
+![Screenshot of TicTime](/docs/Screenshot1.png)
+![Gameplay of TicTime](/docs/gameplay.gif)
 
 ## Run it
 
