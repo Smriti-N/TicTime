@@ -42,10 +42,20 @@ TicTime/
     ├── ui.js         # drawing the board, scores, theme, confetti
     └── main.js       # game state + event handlers
 ```
+### Project Architecture
 
+Want to understand how the JavaScript files work together?
+
+Read our [Architecture Documentation](docs/ARCHITECTURE.md) to learn about:
+
+- The responsibility of each JavaScript file.
+- How game logic and UI communicate.
+- What happens when a player clicks a square.
+- The complete application data flow.
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Pick an issue labelled `documentation`, `beginner` or `hard`, fix it, and open a pull request.
+
 
 ## License
 
