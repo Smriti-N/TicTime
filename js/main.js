@@ -24,10 +24,13 @@ function handleCellClick(index) {
     setBoardLocked(true);
     renderScores(state.scores);
     launchConfetti();
-  } else if (result.status === 'draw') {
-    state.gameOver = true;
-    setStatus("It's a draw!", '');
-    setBoardLocked(true);
+  } } else if (result.status === 'draw') {
+  state.gameOver = true;
+  state.scores.draws++;
+  setStatus("It's a draw!", '');
+  setBoardLocked(true);
+  renderScores(state.scores);
+}
   } else {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
