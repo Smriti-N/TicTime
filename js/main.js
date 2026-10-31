@@ -26,8 +26,10 @@ function handleCellClick(index) {
     launchConfetti();
   } else if (result.status === 'draw') {
     state.gameOver = true;
+    state.scores.draws++;
     setStatus("It's a draw!", '');
     setBoardLocked(true);
+    renderScores(state.scores);
   } else {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
@@ -55,3 +57,10 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+function resetScores() {
+  state.scores = { X: 0, O: 0, draws: 0 };
+  renderScores(state.scores);
+}
+
+
+document.getElementById('reset-scores-btn').addEventListener('click', resetScores);
