@@ -33,8 +33,46 @@ function renderBoard(board) {
   });
 }
 
+const historyEl = document.getElementById('move-history');
+
+function renderMoveHistory(moves, cursor, onSelect) {
+  historyEl.innerHTML = '';
+
+  if (moves.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'history-empty';
+    empty.textContent = 'No moves yet';
+    historyEl.appendChild(empty);
+    return;
+  }
+
+  moves.forEach((move, i) => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+
+    button.type = 'button';
+    button.className = 'history-move';
+    button.textContent =
+      `${i + 1}. ${move.player} → square ${move.square + 1}`;
+
+    button.classList.toggle('current', i + 1 === cursor);
+    button.setAttribute('aria-current',
+      i + 1 === cursor ? 'step' : 'false');
+
+    button.addEventListener('click', () => onSelect(i + 1));
+
+    item.appendChild(button);
+    historyEl.appendChild(item);
+  });
+}
+
+function clearWinningHighlights() {
+  cellEls.forEach(cell => cell.classList.remove('win'));
+}
+
+
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
+  for (let i = 0; i < line.length; i++) {
     cellEls[line[i]].classList.add('win');
   }
 }
