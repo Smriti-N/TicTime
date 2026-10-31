@@ -10,13 +10,16 @@ const MARKS = {
   O: '<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="26"/></svg>',
 };
 
-function buildBoard(onCellClick) {
+function buildBoard(onCellClick, size = 3) {
   boardEl.innerHTML = '';
   cellEls = [];
-  for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
+  boardEl.style.setProperty('--board-size', size);
+  for (let i = 0; i < size * size; i++) {
+    const cell = document.createElement('button');
+    cell.type = 'button';
     cell.className = 'cell';
     cell.dataset.index = i;
+    cell.setAttribute('aria-label', `Empty square ${i + 1}`);
     cell.addEventListener('click', () => onCellClick(i));
     boardEl.appendChild(cell);
     cellEls.push(cell);
@@ -29,14 +32,14 @@ function renderBoard(board) {
     if ((cell.dataset.mark || '') === (value || '')) return;
     cell.dataset.mark = value || '';
     cell.className = 'cell' + (value ? ' filled ' + value.toLowerCase() : '');
+    cell.disabled = Boolean(value);
+    cell.setAttribute('aria-label', value ? `Player ${value}, square ${i + 1}` : `Empty square ${i + 1}`);
     cell.innerHTML = value ? MARKS[value] : '';
   });
 }
 
 function highlightWinningCells(line) {
-  for (let i = 0; i < line.length - 1; i++) {
-    cellEls[line[i]].classList.add('win');
-  }
+  line.forEach((index) => cellEls[index].classList.add('win'));
 }
 
 function setStatus(text, player) {
@@ -47,6 +50,9 @@ function setStatus(text, player) {
 
 function setBoardLocked(locked) {
   boardEl.classList.toggle('is-over', locked);
+  cellEls.forEach((cell) => {
+    cell.disabled = locked || Boolean(cell.dataset.mark);
+  });
 }
 
 function renderScores(scores) {
@@ -55,14 +61,13 @@ function renderScores(scores) {
   document.getElementById('score-draws').textContent = scores.draws;
 }
 
-function setTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+function setAnimationTheme(theme) {
+  document.documentElement.dataset.animationTheme = theme;
 }
 
 function launchConfetti() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const colors = ['#ff5f6d', '#ffc371', '#36d1dc', '#5b86e5', '#a78bfa'];
+  const colors = ['#f97316', '#facc15', '#8b5cf6', '#a3e635', '#c084fc'];
   for (let i = 0; i < 36; i++) {
     const piece = document.createElement('i');
     piece.className = 'confetti';

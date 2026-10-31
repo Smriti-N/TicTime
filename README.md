@@ -27,7 +27,7 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ## How to play
 
 1. Player **X** goes first, then players take turns clicking an empty square.
-2. Get three of your marks in a row (across, down or diagonally) to win.
+2. Get a full row of your marks (across, down or diagonally) to win. Choose a 3 × 3, 4 × 4 or 5 × 5 board; the whole row must match the board size.
 3. If all nine squares fill up with no winner, it's a draw.
 4. **New Game** clears the board; the scoreboard keeps counting.
 
@@ -36,12 +36,21 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ```
 TicTime/
 ├── index.html        # page layout
-├── css/styles.css    # all styling and animations
+├── css/
+│   ├── theme.css     # light/dark design tokens
+│   ├── animations.css # reveal and interaction motion
+│   └── styles.css    # game and demo layout
 └── js/
     ├── game.js       # rules: win/draw detection (no DOM code)
-    ├── ui.js         # drawing the board, scores, theme, confetti
+    ├── ui.js         # drawing the board, scores, and confetti
+    ├── theme.js      # persisted, accessible theme toggle
+    ├── animations.js # reduced-motion-aware scroll reveals
     └── main.js       # game state + event handlers
 ```
+
+The theme defaults to the operating system preference and remembers manual
+changes in local storage. The motion demo below the game shows scroll reveals,
+staggered items, card lift, animated focus, and link underline effects.
 
 ## Contributing
 
