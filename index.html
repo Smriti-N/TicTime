@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,23 +9,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body>
   <!-- shared colour gradients used by the X and O marks -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="grad-x" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5f6d"/><stop offset="1" stop-color="#ffc371"/></linearGradient>
-      <linearGradient id="grad-o" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#36d1dc"/><stop offset="1" stop-color="#5b86e5"/></linearGradient>
+      <linearGradient id="grad-x" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ff5f6d" />
+        <stop offset="1" stop-color="#ffc371" />
+      </linearGradient>
+      <linearGradient id="grad-o" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#36d1dc" />
+        <stop offset="1" stop-color="#5b86e5" />
+      </linearGradient>
     </defs>
   </svg>
-  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
   <header class="header">
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="18" fill="url(#grad-o)"/>
-        <path d="M24 12v40M40 12v40M12 24h40M12 40h40" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
-        <path d="M15 15l6 6M21 15l-6 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
-        <circle cx="47" cy="47" r="4.5" fill="none" stroke="#fff" stroke-width="3.5"/>
+        <rect width="64" height="64" rx="18" fill="url(#grad-o)" />
+        <path d="M24 12v40M40 12v40M12 24h40M12 40h40" stroke="#fff" stroke-opacity=".55" stroke-width="3"
+          stroke-linecap="round" />
+        <path d="M15 15l6 6M21 15l-6 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round" />
+        <circle cx="47" cy="47" r="4.5" fill="none" stroke="#fff" stroke-width="3.5" />
       </svg>
       <div>
         <h1>TicTime</h1>
@@ -37,9 +48,12 @@
   <main class="layout">
     <section class="panel game">
       <div class="scoreboard">
-        <div class="score-card x"><span class="score-label">Player X</span><span class="score-value" id="score-x">0</span></div>
-        <div class="score-card"><span class="score-label">Draws</span><span class="score-value" id="score-draws">0</span></div>
-        <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
+        <div class="score-card x"><span class="score-label">Player X</span><span class="score-value"
+            id="score-x">0</span></div>
+        <div class="score-card"><span class="score-label">Draws</span><span class="score-value"
+            id="score-draws">0</span></div>
+        <div class="score-card o"><span class="score-label">Player O</span><span class="score-value"
+            id="score-o">0</span></div>
       </div>
 
       <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
@@ -53,11 +67,18 @@
 
       <div class="options">
         <label class="option">Mode
-          <select id="mode-select" disabled><option>Two players</option><option>vs Computer</option></select>
+          <select id="mode-select" disabled>
+            <option>Two players</option>
+            <option>vs Computer</option>
+          </select>
           <span class="badge">Coming soon</span>
         </label>
         <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
+          <select id="size-select" disabled>
+            <option>3 × 3</option>
+            <option>4 × 4</option>
+            <option>5 × 5</option>
+          </select>
           <span class="badge">Coming soon</span>
         </label>
       </div>
@@ -69,10 +90,27 @@
     </aside>
   </main>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+
+  <footer class="footer">
+    <p>
+      <strong>TicTime</strong> &copy; 2026
+    </p>
+
+    <p>
+      Made at Hack Day, NIT Jamshedpur
+    </p>
+
+    <p>
+      <a href="https://github.com/Smriti-N/TicTime" target="_blank" rel="noopener noreferrer">
+        View on GitHub
+      </a>
+    </p>
+  </footer>
+
 
   <script src="js/game.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js"></script>
 </body>
+
 </html>
