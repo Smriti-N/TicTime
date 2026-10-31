@@ -1,78 +1,1576 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TicTime · Tic-Tac-Toe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & THEME TOKENS
+       ========================================================================== */
+    :root {
+      --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Dark Theme (High contrast OLED with vibrant accents) */
+      --bg-base: #090b10;
+      --panel-bg: rgba(15, 20, 31, 0.72);
+      --panel-border: rgba(255, 255, 255, 0.1);
+      --panel-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px rgba(56, 189, 248, 0.15);
+
+      --tile-bg: rgba(22, 29, 46, 0.75);
+      --tile-border: rgba(255, 255, 255, 0.08);
+      --tile-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      --tile-hover-shadow: 0 18px 36px -4px rgba(56, 189, 248, 0.35), 0 0 20px rgba(56, 189, 248, 0.25);
+      --tile-hover-border: #38bdf8;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #64748b;
+
+      --color-x: #ff5f6d;
+      --color-o: #36d1dc;
+      --color-delta: #10b981;
+      --color-sq: #f59e0b;
+
+      --blob-1: rgba(14, 165, 233, 0.25);
+      --blob-2: rgba(168, 85, 247, 0.22);
+      --blob-3: rgba(244, 63, 94, 0.2);
+    }
+
+    [data-theme="light"] {
+      /* Soft pastel luxury look */
+      --bg-base: #faf9fe;
+      --panel-bg: rgba(255, 255, 255, 0.85);
+      --panel-border: rgba(255, 255, 255, 0.95);
+      --panel-shadow: 0 25px 60px -15px rgba(100, 116, 139, 0.18), 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+
+      --tile-bg: #ffffff;
+      --tile-border: rgba(226, 232, 240, 0.9);
+      --tile-shadow: 0 10px 25px -4px rgba(100, 116, 139, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+      --tile-hover-shadow: 0 18px 36px -4px rgba(99, 102, 241, 0.22);
+      --tile-hover-border: #818cf8;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-sub: #94a3b8;
+
+      --color-x: #ff5f6d;
+      --color-o: #0ea5e9;
+      --color-delta: #059669;
+      --color-sq: #d97706;
+
+      --blob-1: rgba(254, 205, 211, 0.6);
+      --blob-2: rgba(224, 231, 255, 0.7);
+      --blob-3: rgba(207, 250, 254, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+      padding: 24px 16px 40px;
+    }
+
+    /* Ambient Morphing Aurora Blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    [data-theme="light"] .blob {
+      mix-blend-mode: multiply;
+      filter: blur(85px);
+    }
+    .blob-1 {
+      width: 550px;
+      height: 550px;
+      top: -100px;
+      left: -80px;
+      background: var(--blob-1);
+      animation: floatMorph1 22s infinite alternate ease-in-out;
+    }
+    .blob-2 {
+      width: 600px;
+      height: 600px;
+      top: 30%;
+      right: -150px;
+      background: var(--blob-2);
+      animation: floatMorph2 26s infinite alternate ease-in-out;
+    }
+    .blob-3 {
+      width: 500px;
+      height: 500px;
+      bottom: -100px;
+      left: 20%;
+      background: var(--blob-3);
+      animation: floatMorph3 24s infinite alternate ease-in-out;
+    }
+
+    @keyframes floatMorph1 {
+      0% { transform: translate(0, 0) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+      100% { transform: translate(80px, 60px) scale(1.15); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    }
+    @keyframes floatMorph2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-70px, 80px) scale(1.18); }
+    }
+    @keyframes floatMorph3 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, -60px) scale(1.1); }
+    }
+
+    /* Effect Canvases */
+    #ambient-canvas, #confetti-canvas, #snap-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    #ambient-canvas { z-index: 1; }
+    #confetti-canvas { z-index: 90; }
+    #snap-canvas { z-index: 100; }
+
+    /* Dissolving Elements for Thanos Snap */
+    .snap-dissolving {
+      opacity: 0 !important;
+      transform: scale(0.92) translateY(-14px) !important;
+      filter: blur(6px) !important;
+      transition: opacity 0.75s ease-out, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s ease-out !important;
+    }
+
+    /* ==========================================================================
+       HEADER & CLEAN BRANDING
+       ========================================================================== */
+    .header {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto 28px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #0ea5e9, #a855f7, #ff5f6d);
+      padding: 2px;
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-base);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-inner svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .brand-text h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    [data-theme="light"] .brand-text h1 {
+      background: linear-gradient(135deg, #0f172a 30%, #0284c7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-text p {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .icon-btn {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+      box-shadow: var(--tile-shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .icon-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      border-color: #38bdf8;
+      box-shadow: var(--tile-hover-shadow);
+    }
+
+    /* ==========================================================================
+       MAIN LAYOUT & PANELS
+       ========================================================================== */
+    .layout {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+    @media (min-width: 880px) {
+      .layout {
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
+      }
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--panel-shadow);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .score-card {
+      flex: 1 1 80px;
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      border-radius: 18px;
+      padding: 12px 10px;
+      text-align: center;
+      box-shadow: var(--tile-shadow);
+      border-bottom: 3.5px solid var(--text-sub);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .score-card:hover { transform: translateY(-3px); }
+    .score-card.x { border-bottom-color: var(--color-x); }
+    .score-card.o { border-bottom-color: var(--color-o); }
+    .score-card.delta { border-bottom-color: var(--color-delta); }
+    .score-card.sq { border-bottom-color: var(--color-sq); }
+    .score-card.draws { border-bottom-color: #64748b; }
+
+    .score-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .score-value {
+      display: block;
+      font-size: 1.85rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      line-height: 1;
+      color: var(--text-main);
+    }
+
+    /* Status Bar & Timer */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      border-radius: 9999px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: var(--tile-shadow);
+    }
+    .status .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-x);
+      display: inline-block;
+      box-shadow: 0 0 10px currentColor;
+    }
+    .status.turn-x .dot { background: var(--color-x); color: var(--color-x); }
+    .status.turn-o .dot { background: var(--color-o); color: var(--color-o); }
+    .status.turn-delta .dot { background: var(--color-delta); color: var(--color-delta); }
+    .status.turn-sq .dot { background: var(--color-sq); color: var(--color-sq); }
+
+    .clock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      box-shadow: var(--tile-shadow);
+    }
+    .clock-badge .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: pulseDot 1.4s infinite ease-in-out;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ==========================================================================
+       BOARD GRID & TILES
+       ========================================================================== */
+    .board-wrapper {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .board {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      position: relative;
+    }
+    .board[data-size="3"] { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .board[data-size="4"] { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .board[data-size="5"] { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .board[data-size="6"] { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+
+    .cell {
+      background: var(--tile-bg);
+      border: 1.5px solid var(--tile-border);
+      border-radius: 22px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--tile-shadow);
+      position: relative;
+      user-select: none;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+      padding: 16%;
+    }
+    .board[data-size="4"] .cell { border-radius: 16px; padding: 13%; }
+    .board[data-size="5"] .cell { border-radius: 12px; padding: 10%; }
+    .board[data-size="6"] .cell { border-radius: 9px; padding: 7%; }
+
+    /* Pop-up lift on hover */
+    .cell:not(.filled):not(.is-over):hover {
+      transform: translateY(-6px) scale(1.04);
+      box-shadow: var(--tile-hover-shadow);
+      border-color: var(--tile-hover-border);
+    }
+    .cell:active:not(.filled):not(.is-over) {
+      transform: translateY(-2px) scale(0.98);
+    }
+    .cell.filled {
+      cursor: not-allowed;
+    }
+
+    /* Pop-up tactile animation on mark */
+    .cell.pop-click {
+      animation: cellPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes cellPop {
+      0% { transform: scale(0.8); }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Winning line glow animation for all winning cells */
+    .cell.win {
+      border: 2.5px solid #38bdf8 !important;
+      box-shadow: 0 0 35px 8px rgba(56, 189, 248, 0.75), inset 0 0 15px rgba(56, 189, 248, 0.4) !important;
+      animation: winGlow 1s ease-in-out infinite alternate !important;
+      z-index: 5;
+    }
+    @keyframes winGlow {
+      0% { transform: translateY(-3px) scale(1.02); }
+      100% { transform: translateY(-6px) scale(1.06); }
+    }
+
+    /* Marks SVG */
+    .mark {
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+    .mark path, .mark circle, .mark polygon, .mark rect {
+      animation: drawVector 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    }
+    @keyframes drawVector {
+      0% { stroke-dashoffset: 140; opacity: 0; transform: scale(0.7); }
+      100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
+    }
+
+    /* Coordinated Ghost Hover Preview */
+    .cell .ghost-preview {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      padding: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .cell:not(.filled):not(.is-over):hover .ghost-preview {
+      opacity: 0.35;
+    }
+
+    /* ==========================================================================
+       BUTTONS & SELECT OPTIONS
+       ========================================================================== */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+      justify-content: center;
+    }
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      box-shadow: var(--tile-shadow);
+    }
+    .btn:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+    .btn:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #d946ef 0%, #ec4899 50%, #f43f5e 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 25px -4px rgba(236, 72, 153, 0.45);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 16px 35px -2px rgba(236, 72, 153, 0.65);
+    }
+    .btn-ghost {
+      background: var(--tile-bg);
+      color: var(--text-main);
+      border: 1px solid var(--tile-border);
+    }
+    .btn-ghost:hover {
+      border-color: #ff5f6d;
+      box-shadow: 0 10px 25px -4px rgba(255, 95, 109, 0.3);
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(150, 150, 150, 0.15);
+    }
+    .option {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .select-wrapper {
+      position: relative;
+    }
+    select {
+      width: 100%;
+      background: var(--tile-bg);
+      color: var(--text-main);
+      border: 1px solid var(--tile-border);
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    select:hover {
+      border-color: #38bdf8;
+    }
+    .select-arrow {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       SIDEBAR: MOVE HISTORY & MATCH LOGS
+       ========================================================================== */
+    .history h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .history .muted {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .history-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--tile-bg);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--tile-border);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0ea5e9, #a855f7);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+    }
+
+    .log-list {
+      max-height: 440px;
+      overflow-y: auto;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .log-list::-webkit-scrollbar { width: 5px; }
+    .log-list::-webkit-scrollbar-thumb {
+      background: rgba(150, 150, 150, 0.3);
+      border-radius: 9999px;
+    }
+    .log-empty {
+      text-align: center;
+      padding: 35px 12px;
+      color: var(--text-sub);
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+
+    .move-item, .match-item {
+      background: var(--tile-bg);
+      border: 1px solid var(--tile-border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--tile-shadow);
+      border-left: 4px solid #38bdf8;
+      font-size: 0.85rem;
+      font-weight: 600;
+      animation: fadeIn 0.22s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .match-item.win-x { border-left-color: var(--color-x); }
+    .match-item.win-o { border-left-color: var(--color-o); }
+    .match-item.win-delta { border-left-color: var(--color-delta); }
+    .match-item.win-sq { border-left-color: var(--color-sq); }
+    .match-item.draw { border-left-color: #64748b; }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mini-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .time-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: rgba(150, 150, 150, 0.12);
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .footer {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 32px auto 0;
+      width: 100%;
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(150, 150, 150, 0.15);
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .footer strong {
+      color: var(--text-main);
+    }
+  </style>
 </head>
 <body>
-  <!-- shared colour gradients used by the X and O marks -->
+  <!-- Shared SVG Gradients -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="grad-x" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5f6d"/><stop offset="1" stop-color="#ffc371"/></linearGradient>
-      <linearGradient id="grad-o" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#36d1dc"/><stop offset="1" stop-color="#5b86e5"/></linearGradient>
+      <linearGradient id="grad-x" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ff5f6d" />
+        <stop offset="100%" stop-color="#ffc371" />
+      </linearGradient>
+      <linearGradient id="grad-o" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#36d1dc" />
+        <stop offset="100%" stop-color="#5b86e5" />
+      </linearGradient>
+      <linearGradient id="grad-delta" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#10b981" />
+        <stop offset="100%" stop-color="#6ee7b7" />
+      </linearGradient>
+      <linearGradient id="grad-sq" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f59e0b" />
+        <stop offset="100%" stop-color="#fbbf24" />
+      </linearGradient>
     </defs>
   </svg>
-  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
 
+  <!-- Interactive Background Canvases -->
+  <canvas id="ambient-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+  <canvas id="snap-canvas"></canvas>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Header -->
   <header class="header">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="18" fill="url(#grad-o)"/>
-        <path d="M24 12v40M40 12v40M12 24h40M12 40h40" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
-        <path d="M15 15l6 6M21 15l-6 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
-        <circle cx="47" cy="47" r="4.5" fill="none" stroke="#fff" stroke-width="3.5"/>
-      </svg>
-      <div>
+      <div class="logo-badge">
+        <div class="logo-inner">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v44M42 10v44M10 22h44M10 42h44" stroke="url(#grad-o)"/>
+            <path d="M14 14l8 8M22 14l-8 8" stroke="url(#grad-x)" stroke-width="4.5"/>
+            <circle cx="50" cy="50" r="5" stroke="url(#grad-o)" stroke-width="4.5" fill="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="brand-text">
         <h1>TicTime</h1>
-        <p class="tagline">Two players. Nine squares. One clock ticking.</p>
+        <p id="tagline-text">Two players. Nine squares. One clock ticking.</p>
       </div>
     </div>
     <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
   </header>
 
+  <!-- Main Game Section -->
   <main class="layout">
     <section class="panel game">
-      <div class="scoreboard">
-        <div class="score-card x"><span class="score-label">Player X</span><span class="score-value" id="score-x">0</span></div>
-        <div class="score-card"><span class="score-label">Draws</span><span class="score-value" id="score-draws">0</span></div>
-        <div class="score-card o"><span class="score-label">Player O</span><span class="score-value" id="score-o">0</span></div>
+      <!-- Dynamic Scoreboard -->
+      <div class="scoreboard" id="scoreboard"></div>
+
+      <!-- Turn Status & Live Stopwatch -->
+      <div class="status-bar">
+        <div class="status turn-x" id="status">
+          <span class="dot"></span>
+          <span id="status-text">Player X's turn</span>
+        </div>
+        <div class="clock-badge">
+          <span class="live-dot"></span>
+          <span id="match-timer">00:00</span>
+        </div>
       </div>
 
-      <div class="status" id="status"><span class="dot"></span><span id="status-text">Player X's turn</span></div>
+      <!-- Scalable Board Grid -->
+      <div class="board-wrapper">
+        <div class="board" id="board" data-size="3" data-turn="X"></div>
+      </div>
 
-      <div class="board" id="board" data-turn="X"></div>
-
+      <!-- Controls -->
       <div class="controls">
         <button id="new-game-btn" class="btn btn-primary">New Game</button>
         <button id="reset-scores-btn" class="btn btn-ghost">Reset Scores</button>
       </div>
 
+      <!-- Mode & Size Selectors -->
       <div class="options">
-        <label class="option">Mode
-          <select id="mode-select" disabled><option>Two players</option><option>vs Computer</option></select>
-          <span class="badge">Coming soon</span>
+        <label class="option">
+          Mode
+          <div class="select-wrapper">
+            <select id="mode-select">
+              <option value="2">2 Players (X vs O)</option>
+              <option value="3">3 Players (X vs O vs Δ)</option>
+              <option value="4">4 Players (X vs O vs Δ vs ◻)</option>
+            </select>
+            <span class="select-arrow">▼</span>
+          </div>
         </label>
-        <label class="option">Board
-          <select id="size-select" disabled><option>3 × 3</option><option>4 × 4</option><option>5 × 5</option></select>
-          <span class="badge">Coming soon</span>
+        <label class="option">
+          Board Size
+          <div class="select-wrapper">
+            <select id="size-select">
+              <option value="3">3 × 3 (3 in a row)</option>
+              <option value="4">4 × 4 (4 in a row)</option>
+              <option value="5">5 × 5 (5 in a row)</option>
+              <option value="6">6 × 6 (6 in a row)</option>
+            </select>
+            <span class="select-arrow">▼</span>
+          </div>
         </label>
       </div>
     </section>
 
+    <!-- History Panel -->
     <aside class="panel history">
       <h2>Move history</h2>
-      <p class="muted">Coming soon. Every move will be listed here so you can jump back in time.</p>
+      <p class="muted">Track every move and review previous match statistics.</p>
+
+      <div class="history-tabs">
+        <button id="tab-moves" class="tab-btn active">Move History</button>
+        <button id="tab-matches" class="tab-btn">Match Log</button>
+      </div>
+
+      <div class="log-list" id="log-list"></div>
     </aside>
   </main>
 
-  <footer class="footer"><!-- TODO: add a footer (credits, GitHub link, year) --></footer>
+  <!-- Footer -->
+  <footer class="footer">
+    <p>
+      HackDay 2026 | NIT Jamshedpur · In collaboration with Hacktoberfest 2026<br />
+      Built with pride by <strong>Chotte Mote Hackers</strong>
+    </p>
+  </footer>
 
-  <script src="js/game.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/main.js"></script>
+  <script>
+    /* ==========================================================================
+       1. GAME ENGINE & VECTOR DEFINITIONS
+       ========================================================================== */
+    const PLAYERS_DATA = {
+      X: { name: 'Player X', key: 'x', color: '#ff5f6d' },
+      O: { name: 'Player O', key: 'o', color: '#36d1dc' },
+      DELTA: { name: 'Player Δ', key: 'delta', color: '#10b981' },
+      SQ: { name: 'Player ◻', key: 'sq', color: '#f59e0b' }
+    };
+
+    const MARKS = {
+      X: `<svg class="mark" viewBox="0 0 100 100"><path pathLength="100" d="M26 26L74 74M74 26L26 74" fill="none" stroke="url(#grad-x)" stroke-width="14" stroke-linecap="round"/></svg>`,
+      O: `<svg class="mark" viewBox="0 0 100 100"><circle pathLength="100" cx="50" cy="50" r="28" fill="none" stroke="url(#grad-o)" stroke-width="14"/></svg>`,
+      DELTA: `<svg class="mark" viewBox="0 0 100 100"><polygon pathLength="100" points="50,20 82,78 18,78" fill="none" stroke="url(#grad-delta)" stroke-width="12" stroke-linejoin="round"/></svg>`,
+      SQ: `<svg class="mark" viewBox="0 0 100 100"><rect pathLength="100" x="22" y="22" width="56" height="56" rx="8" fill="none" stroke="url(#grad-sq)" stroke-width="13"/></svg>`
+    };
+
+    function generateWinLines(size) {
+      const lines = [];
+
+      // Rows
+      for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) row.push(r * size + c);
+        lines.push(row);
+      }
+
+      // Columns
+      for (let c = 0; c < size; c++) {
+        const col = [];
+        for (let r = 0; r < size; r++) col.push(r * size + c);
+        lines.push(col);
+      }
+
+      // Diagonals
+      const diag1 = [];
+      const diag2 = [];
+      for (let i = 0; i < size; i++) {
+        diag1.push(i * size + i);
+        diag2.push(i * size + (size - 1 - i));
+      }
+      lines.push(diag1);
+      lines.push(diag2);
+
+      return lines;
+    }
+
+    function createEmptyBoard(size) {
+      return Array(size * size).fill(null);
+    }
+
+    function getGameResult(board, winLines) {
+      for (const line of winLines) {
+        const first = board[line[0]];
+        if (first !== null && line.every(idx => board[idx] === first)) {
+          return { status: 'win', winner: first, line };
+        }
+      }
+
+      if (board.every(cell => cell !== null)) {
+        return { status: 'draw', winner: null, line: null };
+      }
+
+      return { status: 'playing', winner: null, line: null };
+    }
+
+    /* ==========================================================================
+       2. STATE & CACHE
+       ========================================================================== */
+    const state = {
+      gridSize: 3,
+      playerCount: 2,
+      activePlayersList: ['X', 'O'],
+      board: createEmptyBoard(3),
+      winLines: generateWinLines(3),
+      currentPlayerIdx: 0,
+      gameOver: false,
+      scores: { X: 0, O: 0, DELTA: 0, SQ: 0, draws: 0 },
+      currentMoveHistory: [],
+      matchLogs: [],
+      activeTab: 'moves',
+      theme: 'dark',
+      timerSeconds: 0,
+      timerInterval: null
+    };
+
+    const dom = {
+      taglineText: document.getElementById('tagline-text'),
+      themeToggle: document.getElementById('theme-toggle'),
+      scoreboard: document.getElementById('scoreboard'),
+      statusEl: document.getElementById('status'),
+      statusText: document.getElementById('status-text'),
+      matchTimer: document.getElementById('match-timer'),
+      board: document.getElementById('board'),
+      newGameBtn: document.getElementById('new-game-btn'),
+      resetScoresBtn: document.getElementById('reset-scores-btn'),
+      modeSelect: document.getElementById('mode-select'),
+      sizeSelect: document.getElementById('size-select'),
+      tabMoves: document.getElementById('tab-moves'),
+      tabMatches: document.getElementById('tab-matches'),
+      logList: document.getElementById('log-list'),
+      confettiCanvas: document.getElementById('confetti-canvas'),
+      ambientCanvas: document.getElementById('ambient-canvas'),
+      snapCanvas: document.getElementById('snap-canvas')
+    };
+
+    let cellElements = [];
+
+    /* ==========================================================================
+       3. TIMER & TAGLINE
+       ========================================================================== */
+    function formatTime(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      stopTimer();
+      state.timerInterval = setInterval(() => {
+        state.timerSeconds++;
+        dom.matchTimer.textContent = formatTime(state.timerSeconds);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      state.timerSeconds = 0;
+      dom.matchTimer.textContent = '00:00';
+    }
+
+    function updateTagline() {
+      const numWords = ['Zero', 'One', 'Two', 'Three', 'Four'];
+      const pWord = numWords[state.playerCount] || `${state.playerCount}`;
+      const totalSquares = state.gridSize * state.gridSize;
+      const squareWords = { 9: 'Nine', 16: 'Sixteen', 25: 'Twenty-five', 36: 'Thirty-six' };
+      const sqWord = squareWords[totalSquares] || `${totalSquares}`;
+      dom.taglineText.textContent = `${pWord} players. ${sqWord} squares. One clock ticking.`;
+    }
+
+    /* ==========================================================================
+       4. SCOREBOARD & BOARD RENDERING
+       ========================================================================== */
+    function renderScoreboard() {
+      dom.scoreboard.innerHTML = '';
+      state.activePlayersList.forEach(playerKey => {
+        const info = PLAYERS_DATA[playerKey];
+        const card = document.createElement('div');
+        card.className = `score-card ${info.key}`;
+        card.innerHTML = `
+          <span class="score-label">${info.name}</span>
+          <span class="score-value" id="score-${info.key}">${state.scores[playerKey] || 0}</span>
+        `;
+        dom.scoreboard.appendChild(card);
+      });
+
+      const drawsCard = document.createElement('div');
+      drawsCard.className = 'score-card draws';
+      drawsCard.innerHTML = `
+        <span class="score-label">Draws</span>
+        <span class="score-value" id="score-draws">${state.scores.draws || 0}</span>
+      `;
+      dom.scoreboard.appendChild(drawsCard);
+    }
+
+    function updateScoreboardValues() {
+      state.activePlayersList.forEach(playerKey => {
+        const info = PLAYERS_DATA[playerKey];
+        const el = document.getElementById(`score-${info.key}`);
+        if (el) el.textContent = state.scores[playerKey] || 0;
+      });
+      const drawEl = document.getElementById('score-draws');
+      if (drawEl) drawEl.textContent = state.scores.draws || 0;
+    }
+
+    function getCurrentPlayerKey() {
+      return state.activePlayersList[state.currentPlayerIdx];
+    }
+
+    function updateStatusIndicator(overrideText = null, isGameOver = false) {
+      const current = getCurrentPlayerKey();
+      const currentInfo = PLAYERS_DATA[current];
+
+      dom.statusEl.className = `status turn-${currentInfo.key}`;
+      dom.board.dataset.turn = current;
+
+      if (overrideText) {
+        dom.statusText.textContent = overrideText;
+      } else {
+        dom.statusText.textContent = `${currentInfo.name}'s turn`;
+      }
+
+      if (!isGameOver) {
+        cellElements.forEach(cell => {
+          if (!cell.classList.contains('filled')) {
+            const preview = cell.querySelector('.ghost-preview');
+            if (preview) preview.innerHTML = MARKS[current];
+          }
+        });
+      }
+    }
+
+    function buildBoard() {
+      dom.board.innerHTML = '';
+      dom.board.dataset.size = state.gridSize;
+      cellElements = [];
+
+      const totalCells = state.gridSize * state.gridSize;
+      const current = getCurrentPlayerKey();
+
+      for (let i = 0; i < totalCells; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+
+        const ghost = document.createElement('div');
+        ghost.className = 'ghost-preview';
+        ghost.innerHTML = MARKS[current];
+        cell.appendChild(ghost);
+
+        cell.addEventListener('click', () => handleCellClick(i));
+        dom.board.appendChild(cell);
+        cellElements.push(cell);
+      }
+    }
+
+    function renderBoardMarks() {
+      state.board.forEach((val, i) => {
+        const cell = cellElements[i];
+        if (!cell) return;
+
+        if (val !== null && !cell.classList.contains('filled')) {
+          cell.classList.add('filled', 'pop-click');
+          const ghost = cell.querySelector('.ghost-preview');
+          if (ghost) ghost.remove();
+          cell.innerHTML = MARKS[val];
+        }
+      });
+    }
+
+    function highlightWinningCells(line) {
+      if (!line) return;
+      for (let i = 0; i < line.length; i++) {
+        const cellIdx = line[i];
+        if (cellElements[cellIdx]) {
+          cellElements[cellIdx].classList.add('win');
+        }
+      }
+    }
+
+    function setBoardLocked(locked) {
+      cellElements.forEach(cell => {
+        if (locked) {
+          cell.classList.add('is-over');
+        } else {
+          cell.classList.remove('is-over', 'win', 'pop-click');
+        }
+      });
+    }
+
+    /* ==========================================================================
+       5. HISTORY & LOGS
+       ========================================================================== */
+    function renderHistory() {
+      dom.logList.innerHTML = '';
+
+      if (state.activeTab === 'moves') {
+        if (state.currentMoveHistory.length === 0) {
+          dom.logList.innerHTML = `<div class="log-empty">No moves made yet in this match. Click any square to begin!</div>`;
+          return;
+        }
+
+        state.currentMoveHistory.forEach(move => {
+          const item = document.createElement('div');
+          item.className = 'move-item';
+          item.innerHTML = `
+            <div class="item-left">
+              <span class="mini-icon">${MARKS[move.player]}</span>
+              <span><strong>${PLAYERS_DATA[move.player].name}</strong> placed mark at (${move.row + 1}, ${move.col + 1})</span>
+            </div>
+            <span class="time-badge">${move.time}</span>
+          `;
+          dom.logList.appendChild(item);
+        });
+      } else {
+        if (state.matchLogs.length === 0) {
+          dom.logList.innerHTML = `<div class="log-empty">No completed matches yet. Complete a game to view match results!</div>`;
+          return;
+        }
+
+        state.matchLogs.slice().reverse().forEach(log => {
+          const item = document.createElement('div');
+          const borderClass = log.winner ? `win-${PLAYERS_DATA[log.winner].key}` : 'draw';
+          item.className = `match-item ${borderClass}`;
+
+          const icon = log.winner ? `<span class="mini-icon">${MARKS[log.winner]}</span>` : `<span>🤝</span>`;
+          const title = log.winner ? `<strong>${PLAYERS_DATA[log.winner].name}</strong> won` : `<strong>Draw</strong>`;
+
+          item.innerHTML = `
+            <div class="item-left">
+              ${icon}
+              <span>Match #${log.matchId} · ${title} (${log.moves} moves on ${log.size}×${log.size})</span>
+            </div>
+            <span class="time-badge">⏱ ${log.duration}</span>
+          `;
+          dom.logList.appendChild(item);
+        });
+      }
+    }
+
+    /* ==========================================================================
+       6. THANOS SNAP PARTICLE DISINTEGRATION
+       ========================================================================== */
+    let isSnapping = false;
+
+    function spawnSnapDust(rect, colorPalette, density = 45) {
+      const dust = [];
+      const stepX = Math.max(4, rect.width / density);
+      const stepY = Math.max(4, rect.height / density);
+
+      for (let x = rect.left; x < rect.right; x += stepX) {
+        for (let y = rect.top; y < rect.bottom; y += stepY) {
+          const jx = x + (Math.random() - 0.5) * stepX * 0.8;
+          const jy = y + (Math.random() - 0.5) * stepY * 0.8;
+          const angle = -Math.PI / 2 + (Math.random() - 0.3) * 0.9;
+          const speed = Math.random() * 4.5 + 1.5;
+
+          dust.push({
+            x: jx,
+            y: jy,
+            vx: Math.cos(angle) * speed + (Math.random() * 2.2 + 0.8),
+            vy: Math.sin(angle) * speed - (Math.random() * 1.6 + 0.5),
+            size: Math.random() * 3.2 + 1.2,
+            color: colorPalette[Math.floor(Math.random() * colorPalette.length)],
+            alpha: Math.random() * 0.8 + 0.2,
+            decay: Math.random() * 0.012 + 0.009,
+            turbulence: Math.random() * 0.08 + 0.02
+          });
+        }
+      }
+      return dust;
+    }
+
+    function triggerThanosSnap(onComplete) {
+      if (isSnapping) return;
+      isSnapping = true;
+
+      const canvas = dom.snapCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const targets = [];
+      cellElements.forEach(cell => {
+        if (cell.classList.contains('filled') || cell.querySelector('.mark')) {
+          targets.push({ el: cell, type: 'cell' });
+        }
+      });
+
+      const moveItems = dom.logList.querySelectorAll('.move-item, .match-item');
+      moveItems.forEach(item => targets.push({ el: item, type: 'log' }));
+      targets.push({ el: dom.matchTimer, type: 'timer' });
+
+      const palettes = {
+        cell: ['#38bdf8', '#ff5f6d', '#10b981', '#f59e0b', '#a855f7', '#94a3b8', '#cbd5e1'],
+        log: ['#a855f7', '#38bdf8', '#64748b', '#94a3b8'],
+        timer: ['#ff5f6d', '#ec4899', '#64748b', '#cbd5e1']
+      };
+
+      const allDust = [];
+      targets.forEach(target => {
+        const rect = target.el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          target.el.classList.add('snap-dissolving');
+          const p = palettes[target.type] || palettes.cell;
+          allDust.push(...spawnSnapDust(rect, p, target.type === 'cell' ? 18 : 14));
+        }
+      });
+
+      const startTime = performance.now();
+      const duration = 1600;
+
+      function animateDust(now) {
+        const elapsed = now - startTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let activeCount = 0;
+
+        for (let i = 0; i < allDust.length; i++) {
+          const p = allDust[i];
+          if (p.alpha > 0.01) {
+            activeCount++;
+            p.vx += Math.sin((p.y + now * 0.002) * p.turbulence) * 0.12;
+            p.vy -= 0.04;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= p.decay;
+            p.size = Math.max(0.2, p.size * 0.995);
+
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        if (activeCount > 0 && elapsed < duration) {
+          requestAnimationFrame(animateDust);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          targets.forEach(t => t.el.classList.remove('snap-dissolving'));
+          isSnapping = false;
+          if (onComplete) onComplete();
+        }
+      }
+
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 500);
+
+      requestAnimationFrame(animateDust);
+    }
+
+    /* ==========================================================================
+       7. CONFETTI & AMBIENT PARTICLES
+       ========================================================================== */
+    function launchConfetti() {
+      const canvas = dom.confettiCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#38bdf8', '#ff5f6d', '#10b981', '#f59e0b', '#a855f7', '#ec4899'];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height * 0.45,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 16,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10,
+          alpha: 1
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.rotation += p.rotationSpeed;
+          p.alpha -= 0.012;
+
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        });
+
+        if (alive) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      render();
+    }
+
+    function initAmbientParticles() {
+      const canvas = dom.ambientCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const count = Math.min(45, Math.floor(window.innerWidth / 28));
+
+      const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
+      window.addEventListener('mousemove', e => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+      window.addEventListener('mouseleave', () => { mouse.active = false; });
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2.2 + 0.8,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: -Math.random() * 0.65 - 0.15,
+          alpha: Math.random() * 0.55 + 0.25,
+          pulseSpeed: Math.random() * 0.02 + 0.008,
+          colorIdx: Math.floor(Math.random() * 4)
+        });
+      }
+
+      function drawAmbient() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        const colors = isDark
+          ? ['56, 189, 248', '255, 95, 109', '16, 185, 129', '168, 85, 247']
+          : ['2, 132, 199', '244, 63, 94', '5, 150, 105', '147, 51, 234'];
+
+        if (isDark && mouse.active) {
+          const radial = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 160);
+          radial.addColorStop(0, 'rgba(56, 189, 248, 0.08)');
+          radial.addColorStop(1, 'transparent');
+          ctx.fillStyle = radial;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        particles.forEach(p => {
+          if (mouse.active) {
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120 && dist > 0) {
+              const force = (120 - dist) / 120;
+              p.x += (dx / dist) * force * 1.8;
+              p.y += (dy / dist) * force * 1.8;
+            }
+          }
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha += Math.sin(Date.now() * p.pulseSpeed) * 0.005;
+
+          if (p.y < -10) p.y = canvas.height + 10;
+          if (p.x < -10) p.x = canvas.width + 10;
+          if (p.x > canvas.width + 10) p.x = -10;
+
+          const chosenColor = colors[p.colorIdx];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${chosenColor}, ${Math.max(0.1, Math.min(0.8, p.alpha))})`;
+          ctx.shadowBlur = isDark ? 8 : 4;
+          ctx.shadowColor = `rgba(${chosenColor}, 0.8)`;
+          ctx.fill();
+        });
+
+        requestAnimationFrame(drawAmbient);
+      }
+      drawAmbient();
+    }
+
+    /* ==========================================================================
+       8. GAMEPLAY ACTIONS & EVENT HANDLERS
+       ========================================================================== */
+    function handleCellClick(index) {
+      if (state.gameOver || state.board[index] !== null) return;
+
+      if (state.currentMoveHistory.length === 0 && !state.timerInterval) {
+        startTimer();
+      }
+
+      const activePlayer = getCurrentPlayerKey();
+      state.board[index] = activePlayer;
+      const row = Math.floor(index / state.gridSize);
+      const col = index % state.gridSize;
+
+      state.currentMoveHistory.push({
+        player: activePlayer,
+        index,
+        row,
+        col,
+        time: formatTime(state.timerSeconds)
+      });
+
+      renderBoardMarks();
+      if (state.activeTab === 'moves') renderHistory();
+
+      const result = getGameResult(state.board, state.winLines);
+
+      if (result.status === 'win') {
+        state.gameOver = true;
+        stopTimer();
+        state.scores[result.winner] = (state.scores[result.winner] || 0) + 1;
+        updateScoreboardValues();
+        highlightWinningCells(result.line);
+        setBoardLocked(true);
+        updateStatusIndicator(`${PLAYERS_DATA[result.winner].name} wins!`, true);
+        launchConfetti();
+
+        state.matchLogs.push({
+          matchId: state.matchLogs.length + 1,
+          winner: result.winner,
+          duration: formatTime(state.timerSeconds),
+          moves: state.currentMoveHistory.length,
+          size: state.gridSize
+        });
+        if (state.activeTab === 'matches') renderHistory();
+
+      } else if (result.status === 'draw') {
+        state.gameOver = true;
+        stopTimer();
+        state.scores.draws = (state.scores.draws || 0) + 1;
+        updateScoreboardValues();
+        setBoardLocked(true);
+        updateStatusIndicator("It's a draw!", true);
+
+        state.matchLogs.push({
+          matchId: state.matchLogs.length + 1,
+          winner: null,
+          duration: formatTime(state.timerSeconds),
+          moves: state.currentMoveHistory.length,
+          size: state.gridSize
+        });
+        if (state.activeTab === 'matches') renderHistory();
+
+      } else {
+        state.currentPlayerIdx = (state.currentPlayerIdx + 1) % state.activePlayersList.length;
+        updateStatusIndicator();
+      }
+    }
+
+    function startNewGame() {
+      state.board = createEmptyBoard(state.gridSize);
+      state.gameOver = false;
+      state.currentPlayerIdx = 0;
+      state.currentMoveHistory = [];
+      resetTimer();
+
+      setBoardLocked(false);
+      buildBoard();
+      updateStatusIndicator();
+      if (state.activeTab === 'moves') renderHistory();
+    }
+
+    function resetAllScores() {
+      triggerThanosSnap(() => {
+        state.scores = { X: 0, O: 0, DELTA: 0, SQ: 0, draws: 0 };
+        state.matchLogs = [];
+        updateScoreboardValues();
+        startNewGame();
+        renderHistory();
+      });
+    }
+
+    function handleModeChange() {
+      const pCount = parseInt(dom.modeSelect.value, 10);
+      state.playerCount = pCount;
+      const playerKeys = ['X', 'O', 'DELTA', 'SQ'];
+      state.activePlayersList = playerKeys.slice(0, pCount);
+
+      updateTagline();
+      renderScoreboard();
+      startNewGame();
+    }
+
+    function handleSizeChange() {
+      const size = parseInt(dom.sizeSelect.value, 10);
+      state.gridSize = size;
+      state.winLines = generateWinLines(size);
+
+      updateTagline();
+      startNewGame();
+    }
+
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = state.theme;
+      dom.themeToggle.textContent = state.theme === 'dark' ? '🌙' : '☀️';
+    }
+
+    /* ==========================================================================
+       9. INITIALIZATION
+       ========================================================================== */
+    function init() {
+      dom.newGameBtn.addEventListener('click', startNewGame);
+      dom.resetScoresBtn.addEventListener('click', resetAllScores);
+      dom.modeSelect.addEventListener('change', handleModeChange);
+      dom.sizeSelect.addEventListener('change', handleSizeChange);
+      dom.themeToggle.addEventListener('click', toggleTheme);
+
+      dom.tabMoves.addEventListener('click', () => {
+        state.activeTab = 'moves';
+        dom.tabMoves.classList.add('active');
+        dom.tabMatches.classList.remove('active');
+        renderHistory();
+      });
+
+      dom.tabMatches.addEventListener('click', () => {
+        state.activeTab = 'matches';
+        dom.tabMatches.classList.add('active');
+        dom.tabMoves.classList.remove('active');
+        renderHistory();
+      });
+
+      window.addEventListener('resize', () => {
+        if (dom.confettiCanvas) {
+          dom.confettiCanvas.width = window.innerWidth;
+          dom.confettiCanvas.height = window.innerHeight;
+        }
+        if (dom.ambientCanvas) {
+          dom.ambientCanvas.width = window.innerWidth;
+          dom.ambientCanvas.height = window.innerHeight;
+        }
+      });
+
+      updateTagline();
+      renderScoreboard();
+      buildBoard();
+      updateStatusIndicator();
+      renderHistory();
+      initAmbientParticles();
+    }
+
+    window.onload = init;
+  </script>
 </body>
 </html>
