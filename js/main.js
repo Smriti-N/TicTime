@@ -11,6 +11,9 @@ const state = {
 function handleCellClick(index) {
   if (state.gameOver) return;
 
+  // Issue #8: Prevent overwriting occupied squares
+  if (state.board[index] !== null) return;
+
   state.board[index] = state.currentPlayer;
   renderBoard(state.board);
 
@@ -24,13 +27,14 @@ function handleCellClick(index) {
     setBoardLocked(true);
     renderScores(state.scores);
     launchConfetti();
-  } } else if (result.status === 'draw') {
-  state.gameOver = true;
-  state.scores.draws++;
-  setStatus("It's a draw!", '');
-  setBoardLocked(true);
-  renderScores(state.scores);
-}
+
+  } else if (result.status === 'draw') {
+    state.gameOver = true;
+    state.scores.draws++;
+    setStatus("It's a draw!", '');
+    setBoardLocked(true);
+    renderScores(state.scores);
+
   } else {
     state.currentPlayer = nextPlayer(state.currentPlayer);
     setStatus(`Player ${state.currentPlayer}'s turn`, state.currentPlayer);
