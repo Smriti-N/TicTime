@@ -1,13 +1,7 @@
 // Game rules for TicTime. No DOM code lives here.
 
-const WIN_LINES = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8],
-  [0, 3, 6], [1, 4, 7], [2, 5, 8],
-  [0, 4, 8], [2, 4, 7],
-];
-
-function createEmptyBoard() {
-  return Array(9).fill(null);
+function createEmptyBoard(size = 3) {
+  return Array(size * size).fill(null);
 }
 
 function nextPlayer(player) {
@@ -15,13 +9,25 @@ function nextPlayer(player) {
 }
 
 function getGameResult(board) {
+  const size = Math.sqrt(board.length);
+  const target = size === 3 ? 3 : 4;
+  for (let row = 0; row < size; row++) {
+    for (let column = 0; column < size; column++) {
+      const start = row * size + column;
+      if (!board[start]) continue;
+      for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+        const endRow = row + (target - 1) * dr;
+        const endColumn = column + (target - 1) * dc;
+        if (endRow >= size || endColumn < 0 || endColumn >= size) continue;
+        const line = Array.from({ length: target }, (_, step) => (row + step * dr) * size + column + step * dc);
+        if (line.every((index) => board[index] === board[start])) {
+          return { status: 'win', winner: board[start], line };
+        }
+      }
+    }
+  }
   if (board.every((cell) => cell !== null)) {
     return { status: 'draw', winner: null, line: null };
-  }
-  for (const [a, b, c] of WIN_LINES) {
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return { status: 'win', winner: board[a], line: [a, b, c] };
-    }
   }
   return { status: 'playing', winner: null, line: null };
 }
