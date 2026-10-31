@@ -91,7 +91,31 @@ select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px soli
 .badge { font-size: .68rem; padding: 3px 8px; border-radius: 999px; color: #fff; background: linear-gradient(90deg, var(--x), #ffc371); }
 
 /* ---------- Footer & confetti ---------- */
-.footer { max-width: 1000px; margin: 30px auto 0; text-align: center; color: var(--muted); font-size: .85rem; }
+.footer {
+    width: 100%;
+    padding: 24px 20px;
+    margin-top: 40px;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-color);
+    background: var(--background-color);
+    font-size: 14px;
+}
+
+.footer a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer-credit {
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+}
 .confetti { position: fixed; top: -12px; width: 9px; height: 14px; border-radius: 2px; z-index: 10; pointer-events: none; animation: fall 1.9s ease-in forwards; }
 @keyframes fall { to { transform: translate(var(--drift), 105vh) rotate(720deg); opacity: .8; } }
 
