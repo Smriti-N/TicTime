@@ -97,3 +97,29 @@ select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px soli
 
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .mark path, .mark circle { stroke-dashoffset: 0; } }
+
+@media (max-width: 480px) {
+    .panel {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .board {
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+        box-sizing: border-box;
+
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .cell {
+        min-width: 0;
+        min-height: 0;
+        box-sizing: border-box;
+    }
+}
