@@ -55,3 +55,7 @@ renderScores(state.scores);
 setStatus("Player X's turn", 'X');
 document.getElementById('new-game-btn').addEventListener('click', startNewGame);
 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('reset-scores-btn').addEventListener('click', () => {
+  state.scores = { X: 0, O: 0, draws: 0 };
+  renderScores(state.scores);
+});
